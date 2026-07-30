@@ -9,18 +9,23 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-$sql = "SELECT * FROM waiting_list WHERE user_id = ?";
+// දින සහ designation අගය මත පදනම්ව ස්වයංක්‍රීයව rank එක ගණනය කිරීම
+$sql = "SELECT a1.*, 
+               (SELECT COUNT(*) 
+                FROM waiting_list a2 
+                WHERE (a2.applied_date < a1.applied_date) 
+                   OR (a2.applied_date = a1.applied_date AND a2.designation_score > a1.designation_score)
+                   OR (a2.applied_date = a1.applied_date AND a2.designation_score = a1.designation_score AND a2.id <= a1.id)
+               ) AS calculated_position
+        FROM waiting_list a1 
+        WHERE a1.user_id = ?";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $waiting = $result->fetch_assoc();
-
-// Get total waiting count
-$total_sql = "SELECT COUNT(*) as total FROM waiting_list";
-$total_result = $conn->query($total_sql);
-$total_row = $total_result->fetch_assoc();
-$total_waiting = $total_row['total'];
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -28,93 +33,149 @@ $total_waiting = $total_row['total'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiting List</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Your Waiting List Position</title>
     <style>
-        .waiting-container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 30px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* දෙවන රූපයේ ඇති ආකාරයට බෝඩරය සහ Mouse hover කරද්දී Glow වීම */
+        .container {
             background: #ffffff;
-            border: 1px solid #d1d5db;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            text-align: center;
-        }
-        .waiting-container h2 {
-            color: #111;
-            margin-bottom: 20px;
-        }
-        .position-box {
-            background: #f3f4f6;
+            border: 1.5px solid #a5b4fc; /* Soft blue border */
+            border-radius: 16px;
             padding: 40px;
-            border-radius: 12px;
-            margin: 20px 0;
+            width: 480px;
+            height: 480px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
         }
-        .position-number {
-            font-size: 72px;
-            font-weight: 700;
-            color: #f59e0b;
+
+        /* Container එක මතට Mouse එක ගෙන යන විට (Hover) Blue පාටින් Glow වීම */
+        .container:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
-        .position-label {
-            font-size: 18px;
-            color: #4b5563;
+
+        /* උඩින් ඇති ශීර්ෂය */
+        .main-heading {
+            font-size: 22px;
+            font-weight: bold;
+            color: #222;
+            line-height: 1.4;
+            margin-top: 10px;
         }
-        .total-waiting {
-            color: #6b7280;
-            font-size: 16px;
+
+        /* මැද ඇති Position කොටස */
+        .position-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
-        .info-card {
-            background: #f9fafb;
-            padding: 15px;
+
+        .position-box {
+            border: 1.5px solid #cbd5e1;
             border-radius: 8px;
-            margin: 15px 0;
+            width: 85px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #111;
-            text-decoration: none;
+
+        .position-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .position-label {
+            font-size: 16px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* යටින් ඇති බටන් එක (දෙවන රූපයේ පාට සහ hover efekt එක) */
+        .back-btn-container {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: block;
+            width: 100%;
+            background: #fbbf24; /* දෙවන රූපයේ ඇති කහ/තැඹිලි පාට */
+            border: none;
+            color: #111; /* මුලින් කළු පාට අකුරු */
+            padding: 14px 0;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .back-link:hover { color: #f59e0b; }
+
+        /* බටන් එක මතට Mouse එක ගෙන යන විට (Hover) පාට මාරු වීම */
+        .back-btn:hover {
+            background:  #fbbf24; /* ටිකක් තද කහ/තැඹිලි පාටක් */
+            color: #ffffff;      /* අකුරු සුදු පාටට හැරේ */
+        }
+
         .no-position {
-            padding: 30px;
+            font-size: 15px;
             color: #6b7280;
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="waiting-container">
-            <h2>📋 Your Waiting List Position</h2>
-            
-            <?php if ($waiting): ?>
+
+    <div class="container">
+        <!-- 1. උඩින් ඇති ශීර්ෂය -->
+        <div class="main-heading">
+            Your Waiting List Position
+        </div>
+
+        <!-- 2. මැද ඇති Position කොටස -->
+        <?php if ($waiting): ?>
+            <div class="position-wrapper">
                 <div class="position-box">
-                    <div class="position-number">#<?php echo htmlspecialchars($waiting['position']); ?></div>
-                    <div class="position-label">Your Position</div>
+                    <div class="position-number"><?php echo htmlspecialchars($waiting['calculated_position']); ?></div>
                 </div>
-                
-                <div class="info-card">
-                    <strong>Quarter Type:</strong> <?php echo htmlspecialchars($waiting['quarter_type']); ?>
-                </div>
-                
-                <div class="total-waiting">
-                    Total applicants in queue: <strong><?php echo $total_waiting; ?></strong>
-                </div>
-                
-                <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px; color: #92400e;">
-                    ⏳ Estimated waiting time: Approximately 2-4 weeks
-                </div>
-            <?php else: ?>
-                <div class="no-position">
-                    <p>You are not currently on the waiting list.</p>
-                    <p style="margin-top: 10px;"><a href="request_quarters.php" style="color: #f59e0b;">Submit an application →</a></p>
-                </div>
-            <?php endif; ?>
-            
-            <a href="index.php" class="back-link">&larr; Back to Dashboard</a>
+                <div class="position-label">Your Position</div>
+            </div>
+        <?php else: ?>
+            <div class="no-position">
+                <p>You are not currently on the waiting list.</p>
+                <p style="margin-top: 5px;"><a href="request_quarters.php" style="color: #f59e0b; text-decoration: none; font-weight: 600;">Submit an application &rarr;</a></p>
+            </div>
+        <?php endif; ?>
+
+        <!-- 3. යටින් ඇති Back to Dashboard බටන් එක -->
+        <div class="back-btn-container">
+            <a href="index.php" class="back-btn">&larr; Back to Dashboard</a>
         </div>
     </div>
+
 </body>
 </html>

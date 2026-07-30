@@ -9,7 +9,9 @@ $conn = new mysqli($host, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Database Connection Failed: " . $conn->connect_error);
+    // JSON ආකෘතියෙන් error එක ලබා දීම (Frontend එකට බාධාවකින් තොරව catch කර ගැනීමට)
+    header('Content-Type: application/json');
+    die(json_encode(['success' => false, 'error' => 'Database Connection Failed: ' . $conn->connect_error]));
 }
 
 // Set UTF-8 character set support
