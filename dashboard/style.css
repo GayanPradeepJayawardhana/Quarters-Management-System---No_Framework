@@ -1,0 +1,288 @@
+/* ==========================================
+   1. GLOBAL & RESET STYLES (Light Theme)
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #111111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Container Wrapper */
+.dashboard-container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* ==========================================
+   2. UPDATED HEADER & DROPDOWN SECTION
+   ========================================== */
+.dashboard-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative; 
+    padding: 1rem 0 1.5rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    width: 100%;
+}
+
+/* Top-left corner greeting styling */
+.top-left-greeting {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    background: #ffffff;
+    padding: 0px;
+    border: none;
+    box-shadow: none;
+}
+
+.top-left-greeting h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #111111;
+    font-weight: 600;
+}
+
+.dashboard-title-section {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.dashboard-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+.dashboard-subtitle {
+    margin: 5px 0 0 0;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.profile-dropdown-container {
+    margin-left: auto;
+    position: relative;
+}
+
+.profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.profile-trigger:hover {
+    border-color: #3b82f6;
+    background-color: #f9fafb;
+}
+
+.user-greeting {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #111111;
+}
+
+.dropdown-icon {
+    font-size: 10px;
+    color: #4b5563;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 115%;
+    width: 180px;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    color: #111111;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #2563eb;
+}
+
+.dropdown-item.logout-btn {
+    color: #dc2626;
+}
+
+.dropdown-item.logout-btn:hover {
+    background-color: rgba(220, 38, 38, 0.05);
+    color: #dc2626;
+}
+
+.dropdown-divider {
+    margin: 0;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ==========================================
+   3. CARDS & TILES GRID SYSTEM
+   ========================================== */
+
+/* Top Row: 3 Items Grid */
+.dashboard-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+    margin-top: 25px;
+}
+
+/* Bottom Row: 2 Items Grid */
+.dashboard-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+/* Responsive adjustment for screens smaller than 900px */
+@media (max-width: 900px) {
+    .dashboard-grid-3, .dashboard-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+   4. CARD STYLING (Light Theme)
+   ========================================== */
+.dashboard-card, .tile-card {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: #111111;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-card:hover, .tile-card:hover {
+    transform: translateY(-5px);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+.card-icon img, .tile-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover .card-icon img, .tile-card:hover img {
+    transform: scale(1.1);
+}
+
+.card-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.dashboard-card h3, .tile-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #111111;
+}
+
+.dashboard-card p, .tile-card p {
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+/* ==========================================
+   5. BUTTONS & BADGES
+   ========================================== */
+.position-relative {
+    position: relative;
+}
+
+.badge-notification {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #ef4444;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3);
+}
+
+.btn-primary {
+    display: inline-block;
+    margin-top: auto;
+    padding: 8px 16px;
+    background-color: #fbbf24;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    color: #111111;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #f59e0b;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
