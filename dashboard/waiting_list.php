@@ -128,8 +128,8 @@ $stmt->close();
         .back-btn {
             display: block;
             width: 100%;
-            background: #fbbf24;
-            border: none;
+            background: #ffc226;
+            border: #ffffff;
             color: #111;
             padding: 14px 0;
             border-radius: 10px;
@@ -143,7 +143,7 @@ $stmt->close();
         }
 
         .back-btn:hover {
-            background: #d97706;
+            background: #ffc226;
             color: #ffffff;
         }
 

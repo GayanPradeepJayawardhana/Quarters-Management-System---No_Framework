@@ -45,248 +45,192 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notification View</title>
-    <!-- FontAwesome link for the Bell Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Notification UI</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* මුළු පිටුවේ පසුබිම */
         body {
-            background-color: #f4f7f6; 
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
-        /* Notification Card එකේ ප්‍රධාන ඩිසයින් එක */
         .notification-card {
-            background-color: #ffffff;
-            border: 2px solid #1a365d;
-            border-radius: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 40px;
-            width: 100%;
-            max-width: 600px;
-            box-sizing: border-box;
+            width: 450px;
+            text-align: center;
             position: relative;
-            box-shadow: 0 10px 25px rgba(26, 54, 93, 0.15);
+            border: 1px solid #b3d7ff; /* Light blue border */
         }
 
-        /* Badge එක */
-        .badge-notification {
+        .status-badge {
             position: absolute;
             top: 20px;
             right: 20px;
-            background-color: #e53e3e;
+            background-color: #dc3545; /* Red */
             color: white;
-            padding: 6px 15px;
+            padding: 5px 15px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
         }
 
-        /* Title එක සහ Bell Icon එක */
-        .header {
-            text-align: center;
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 30px;
-            margin-top: 20px;
         }
 
-        .header h2 {
+        h2 {
             margin: 0;
-            font-size: 32px;
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .fa-bell {
-            color: #ffc107;
-            font-size: 35px;
-        }
-
-        /* Date එක තියෙන පේළිය */
-        .form-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .form-row label {
-            width: 80px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #000;
-        }
-
-        .form-row input {
-            flex: 1;
-            max-width: 250px;
-            padding: 10px 15px;
-            border: 1px solid #1a365d;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            color: #333;
-            box-sizing: border-box;
-        }
-
-        /* මැද තියෙන ලොකු Message කොටුව */
-        .message-box {
-            width: 100%;
-            min-height: 150px;
-            border: 1px solid #1a365d;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-            box-sizing: border-box;
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .message-box h3 {
             font-size: 24px;
-            font-weight: bold;
-            color: #000;
-            margin: 0;
-        }
-        
-        .message-content {
-            font-size: 18px;
             color: #333;
-            line-height: 1.6;
         }
 
-        /* Buttons ටික */
-        .actions {
+        .bell-icon {
+            font-size: 24px;
+            color: #ffc107;
+        }
+
+        .date-row {
             display: flex;
-            justify-content: center;
-            gap: 40px;
+            align-items: center;
+            margin-bottom: 20px;
+            text-align: left;
         }
 
-        /* ==========================================
-           BUTTONS & HOVER EFFECTS STYLES
-           ========================================== */
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            background-color: #ffc107;
-            border: 1px solid #e0a800;
-            border-radius: 8px;
-            color: #111111;
-            text-decoration: none;
+        .date-label {
             font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            width: 160px;
-            text-align: center;
-            transition: all 0.2s ease-in-out;
+            width: 60px;
         }
 
-        /* Mouse එක Button එක උඩට ගෙන ගිය විට (Hover effect) */
-        .btn:hover {
-            background-color: #e0a800;
-            color: #ffffff;
-            border-color: #d39e00;
-            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
-            transform: translateY(-2px);
+        .date-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            color: #495057;
+            outline: none;
+        }
+
+        .message-box {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            color: #6c757d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 100px;
+        }
+
+        .message-content {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+            text-align: center;
         }
 
         .no-notification {
-            text-align: center;
-            padding: 20px;
-            color: #6b7280;
+            color: #6c757d;
+            font-size: 15px;
         }
 
-        /* --- Mobile Responsive Rules --- */
-        @media (max-width: 600px) {
-            .notification-card {
-                padding: 25px 20px;
-            }
+        /* === බොත්තම් සඳහා CSS (ඔබ දුන් අයුරින්) === */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-            .header h2 {
-                font-size: 24px;
-            }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+            text-decoration: none; 
+        }
 
-            .fa-bell {
-                font-size: 26px;
-            }
+        /* 'Mark as read' සහ 'Delete' බොත්තම් සඳහා */
+        .btn-mark-read, .btn-delete {
+            background-color: #ffc226; 
+            color: #111;
+            flex: 1;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
 
-            .form-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
+        /* ඔබ ඉල්ලූ පරිදි සැකසූ 'Back' බොත්තම */
+        .btn-back {
+            display: block;
+            width: 100%;
+            background: #ffc226;
+            border: 1px solid #ffffff;
+            color: #111;
+            padding: 14px 0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
 
-            .form-row input {
-                max-width: 100%;
-                width: 100%;
-            }
-
-            .message-box {
-                min-height: 120px;
-                padding: 20px;
-            }
-
-            .message-box h3 {
-                font-size: 20px;
-            }
-            
-            .message-content {
-                font-size: 16px;
-            }
-
-            .actions {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-            .badge-notification {
-                top: 15px;
-                right: 15px;
-                font-size: 12px;
-                padding: 5px 10px;
-            }
+        .btn-mark-read:hover, .btn-delete:hover, .btn-back:hover {
+            background: #ffc226;
+            color: #ffffff;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
     <div class="notification-card">
-        <!-- New Badge -->
-        <div class="badge-notification">
+        <!-- Status Badge (Read / New) -->
+        <div class="status-badge">
             <?php echo ($notification && $notification['is_read'] == 0) ? '1 New' : 'Read'; ?>
         </div>
-        
-        <!-- Header with Bell Icon -->
-        <div class="header">
-            <h2>Notification <i class="fa-solid fa-bell"></i></h2>
+
+        <div class="title-container">
+            <h2>Notification</h2>
+            <span class="bell-icon"><i class="fa-solid fa-bell"></i></span>
         </div>
-        
-        <form method="POST" action="">
-            <!-- Date Row -->
-            <div class="form-row">
-                <label for="date">Date</label>
-                <input type="text" id="date" name="date" value="<?php echo $currentDate; ?>" readonly>
+
+        <form method="POST" action="" style="width: 100%;">
+            <div class="date-row">
+                <span class="date-label">Date</span>
+                <input type="text" class="date-input" name="date" value="<?php echo $currentDate; ?>" readonly>
             </div>
-            
-            <!-- Message Area -->
+
             <div class="message-box">
                 <?php if ($notification): ?>
                     <div class="message-content">
@@ -295,21 +239,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 <?php else: ?>
                     <div class="no-notification">
-                        <p>📭 No notifications available</p>
+                        <i class="fas fa-envelope"></i> No notifications available
                     </div>
                 <?php endif; ?>
             </div>
-            
-            <!-- Action Buttons -->
-            <div class="actions">
-                <button type="submit" name="mark_read" class="btn" <?php echo (!$notification || $notification['is_read'] == 1) ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''; ?>>
-                    Mark as read
+
+            <!-- === බොත්තම් කොටස === -->
+            <div class="button-container">
+                <button type="submit" name="mark_read" class="btn btn-mark-read">
+                    <i class="fas fa-check"></i> Mark as read
                 </button>
-                <button type="submit" name="delete" class="btn" <?php echo !$notification ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''; ?>>
-                    Delete
+                <button type="submit" name="delete" class="btn btn-delete">
+                    <i class="fas fa-trash"></i> Delete
                 </button>
             </div>
+            
+            <a href="../../dashboard/index.php" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
         </form>
+
     </div>
 
 </body>
