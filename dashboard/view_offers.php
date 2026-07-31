@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 $message = '';
+$accepted = false; // Flag to track if the offer has been accepted
 
 // Handle form submission before checking for offers
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -16,14 +17,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $offer_id = $_POST['offer_id'] ?? '';
     
     if ($response == 'accept') {
+        $accepted = true; // Set flag to true so buttons are hidden and success box shows
         // Show success alert message for accepting
-        $message = '<div class="alert alert-success">
+        $message = '<div class="alert-success">
             Collect your quarter documents within 2 weeks through BDF, Unless your quarter allocation will be removed.
         </div>';
     } elseif ($response == 'later') {
         if (!empty($offer_id)) {
             // Update created_at timestamp to move the request to the bottom of the queue/list
-            // Also change status from 'approved' back to pending/waiting if required by your logic, or keep it updated.
             $update_sql = "UPDATE applications SET created_at = NOW(), status = 'pending' WHERE id = ? AND user_id = ?";
             $update_stmt = $conn->prepare($update_sql);
             $update_stmt->bind_param("ii", $offer_id, $user_id);
@@ -40,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $delete_stmt->bind_param("ii", $offer_id, $user_id);
             $delete_stmt->execute();
         }
-        // No message is set, so the page will automatically fall through and display "No offers available at the moment."
     }
 }
 
@@ -59,63 +59,155 @@ if ($check_result->num_rows > 0) {
     $offer_data = $check_result->fetch_assoc();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Respond to Offer</title>
-    <link rel="stylesheet" href="style.css">
     <style>
-        .offer-container {
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 35px;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            font-family: Arial, sans-serif;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .offer-container h2 {
-            color: #1e293b;
-            margin-bottom: 25px;
+
+        /* Main Card with Updated Border and Hover Glow Effect */
+        .offer-card {
+            background: #ffffff;
+            width: 550px;
+            padding: 40px;
+            border-radius: 25px;
+            border: 2px solid #007bff;
+            box-shadow: 0 1px 2px rgba(0, 123, 255, 0.15);
             text-align: center;
+            box-sizing: border-box;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .offer-card:hover {
+            
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .offer-card h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
             font-size: 24px;
         }
-        .offer-box {
-            background: #ffffff;
-            border: 1px solid #93c5fd;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 20px 0;
+
+        .offer-card p {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 35px;
         }
-        .offer-box p {
-            font-size: 16px;
-            color: #334155;
-            margin-bottom: 25px;
-        }
-        .btn-group {
+
+        .options-container {
             display: flex;
+            justify-content: space-between;
             gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
+            margin-bottom: 35px;
         }
-        .btn-accept-now, .btn-later, .btn-deny {
-            background: #93c5fd;
-            color: #1e3a8a;
-            border: 1px solid #3b82f6;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 600;
+
+        .option-box {
+            flex: 1;
+            padding: 20px 10px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid transparent;
+            background: none;
+            font-family: inherit;
         }
-        .btn-accept-now:hover, .btn-later:hover, .btn-deny:hover {
-            background: #3b82f6;
+
+        .option-box:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Accept Box Styles */
+        .accept {
+            background-color: #e8f5e9;
+            border-color: #c8e6c9;
+        }
+        .accept .icon {
+            background-color: #2e7d32;
             color: white;
         }
+        .accept span {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        /* Later Box Styles */
+        .later {
+            background-color: #fffde7;
+            border-color: #fff9c4;
+        }
+        .later .icon {
+            background-color: #fbc02d;
+            color: white;
+        }
+        .later span {
+            color: #f57f17;
+            font-weight: 600;
+        }
+
+        /* Deny Box Styles */
+        .deny {
+            background-color: #ffebee;
+            border-color: #ffcdd2;
+        }
+        .deny .icon {
+            background-color: #c62828;
+            color: white;
+        }
+        .deny span {
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Back Button Styles */
+        .back-btn {
+            background-color: #eef2f7;
+            border: 1px solid #d0d7de;
+            color: #007bff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            float: left;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background-color: #e2e8f0;
+        }
+
         .alert-success {
             background: #ecfdf5;
             border: 1px solid #10b981;
@@ -125,51 +217,62 @@ if ($check_result->num_rows > 0) {
             text-align: center;
             margin-bottom: 20px;
             font-weight: 600;
+            font-size: 14px;
         }
+
         .no-offer {
-            text-align: center;
-            padding: 30px;
-            color: #6b7280;
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 15px;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #111;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .back-link:hover { color: #3b82f6; }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="offer-container">
-            <h2>Respond to Offer</h2>
-            
-            <?php echo $message; ?>
-            
-            <?php if ($offer_exists): ?>
-                <div class="offer-box">
-                    <p>• You have been assigned to a quarter, Do you,</p>
+
+    <div class="offer-card">
+        <h2>Respond to Offer</h2>
+        
+        <?php echo $message; ?>
+
+        <?php if ($offer_exists): ?>
+            <?php if (!$accepted): ?>
+                <p>You have been assigned to a quarter, Do you,</p>
+                
+                <form method="POST" action="">
+                    <input type="hidden" name="offer_id" value="<?php echo $offer_data['id']; ?>">
                     
-                    <form method="POST" action="">
-                        <input type="hidden" name="offer_id" value="<?php echo $offer_data['id']; ?>">
-                        <div class="btn-group">
-                            <button type="submit" name="response" value="accept" class="btn-accept-now">Accept now</button>
-                            <button type="submit" name="response" value="later" class="btn-later">Later</button>
-                            <button type="submit" name="response" value="deny" class="btn-deny">Deny</button>
-                        </div>
-                    </form>
-                </div>
-            <?php else: ?>
-                <div class="no-offer">
-                    <p>No offers available at the moment.</p>
-                    <p style="margin-top: 10px;">You will be notified when a quarter becomes available.</p>
-                </div>
+                    <div class="options-container">
+                        <!-- Accept Option -->
+                        <button type="submit" name="response" value="accept" class="option-box accept">
+                            <div class="icon">&#10003;</div>
+                            <span>Accept now</span>
+                        </button>
+
+                        <!-- Later Option -->
+                        <button type="submit" name="response" value="later" class="option-box later">
+                            <div class="icon">&#9202;</div>
+                            <span>Later</span>
+                        </button>
+
+                        <!-- Deny Option -->
+                        <button type="submit" name="response" value="deny" class="option-box deny">
+                            <div class="icon">&#10005;</div>
+                            <span>Deny</span>
+                        </button>
+                    </div>
+                </form>
             <?php endif; ?>
-            
-            <a href="index.php" class="back-link">&larr; Back to Dashboard</a>
-        </div>
+        <?php else: ?>
+            <div class="no-offer">
+                <p>No offers available at the moment.<br>You will be notified when a quarter becomes available.</p>
+            </div>
+        <?php endif; ?>
+
+        <a href="index.php" class="back-btn">
+            &#8592; Back to Dashboard
+        </a>
+        <div style="clear: both;"></div>
     </div>
+
 </body>
 </html>
