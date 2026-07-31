@@ -152,63 +152,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 15px;
         }
 
-        /* === බොත්තම් සඳහා CSS (ඔබ දුන් අයුරින්) === */
+        /* === බොත්තම් සඳහා ස්ටයිල් === */
         .button-container {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .btn {
-            padding: 12px 24px;
-            border: none;
+            background-color: #eef2f7;
+            border: 1px solid #d0d7de;
+            color: #007bff;
+            padding: 10px 18px;
             border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
             transition: background-color 0.2s;
-            text-decoration: none; 
-        }
-
-        /* 'Mark as read' සහ 'Delete' බොත්තම් සඳහා */
-        .btn-mark-read, .btn-delete {
-            background-color: #ffc226; 
-            color: #111;
-            flex: 1;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 14px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* ඔබ ඉල්ලූ පරිදි සැකසූ 'Back' බොත්තම */
-        .btn-back {
-            display: block;
-            width: 100%;
-            background: #ffc226;
-            border: 1px solid #ffffff;
-            color: #111;
-            padding: 14px 0;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
             text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .btn-mark-read:hover, .btn-delete:hover, .btn-back:hover {
-            background: #ffc226;
-            color: #ffffff;
-            opacity: 1;
+        /* Mark as read සහ Delete බොත්තම් */
+        .btn-mark-read, .btn-delete {
+            flex: 1;
+        }
+
+        /* Back to Dashboard බොත්තම ටිකක් කුඩා කර සැකසූ අයුරු */
+        .btn-back {
+            background-color: #eef2f7;
+            border: 1px solid #d0d7de;
+            color: #007bff;
+            padding: 7px 14px;          /* ප්‍රමාණය අඩු කරන ලදී */
+            border-radius: 6px;        /* border radius එක ටිකක් අඩු කළා */
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;            /* font size එක ටිකක් කුඩා කළා */
+            font-weight: 500;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            width: auto;               /* සම්පූර්ණ පළල වෙනුවට අන්තර්ගතයට අනුව සකස් වේ */
+            margin: 0 auto;
+        }
+
+        .btn:hover, .btn-back:hover {
+            background-color: #e2e8f0;
         }
     </style>
 </head>
@@ -254,9 +249,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
             
-            <a href="../../dashboard/index.php" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
+            <div style="text-align: center;">
+                <a href="../../dashboard/index.php" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
         </form>
 
     </div>

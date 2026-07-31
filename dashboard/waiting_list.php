@@ -125,26 +125,29 @@ $stmt->close();
             margin-bottom: 10px;
         }
 
+        /* මෙන්න ඔබ ඉල්ලූ අයුරින් වෙනස් කළ Button එකේ Style එක */
         .back-btn {
-            display: block;
-            width: 100%;
-            background: #ffc226;
-            border: #ffffff;
-            color: #111;
-            padding: 14px 0;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
+            background-color: #eef2f7;
+            border: 1px solid #d0d7de;
+            color: #007bff;
+            padding: 12px 18px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            width: 100%;
+            text-decoration: none;
+            box-shadow: none;
         }
 
         .back-btn:hover {
-            background: #ffc226;
-            color: #ffffff;
+            background-color: #e2e8f0;
+            color: #0056b3;
         }
 
         .no-position {
