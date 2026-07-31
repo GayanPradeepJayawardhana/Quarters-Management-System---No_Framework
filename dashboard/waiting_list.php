@@ -1,6 +1,17 @@
 <?php
 session_start();
-require_once '../db.php';
+
+// Database Connection (applicants_db සඳහා)
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'applicants_db';
+
+$conn = new mysqli($host, $username, $password, $database);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
@@ -9,13 +20,13 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// දින සහ designation අගය මත පදනම්ව ස්වයංක්‍රීයව rank එක ගණනය කිරීම
+// applied_date සහ employee_marks මත පදනම්ව ස්වයංක්‍රීයව rank එක ගණනය කිරීම
 $sql = "SELECT a1.*, 
                (SELECT COUNT(*) 
                 FROM waiting_list a2 
                 WHERE (a2.applied_date < a1.applied_date) 
-                   OR (a2.applied_date = a1.applied_date AND a2.designation_score > a1.designation_score)
-                   OR (a2.applied_date = a1.applied_date AND a2.designation_score = a1.designation_score AND a2.id <= a1.id)
+                   OR (a2.applied_date = a1.applied_date AND a2.employee_marks > a1.employee_marks)
+                   OR (a2.applied_date = a1.applied_date AND a2.employee_marks = a1.employee_marks AND a2.id <= a1.id)
                ) AS calculated_position
         FROM waiting_list a1 
         WHERE a1.user_id = ?";
@@ -50,10 +61,9 @@ $stmt->close();
             height: 100vh;
         }
 
-        /* දෙවන රූපයේ ඇති ආකාරයට බෝඩරය සහ Mouse hover කරද්දී Glow වීම */
         .container {
             background: #ffffff;
-            border: 1.5px solid #a5b4fc; /* Soft blue border */
+            border: 1.5px solid #a5b4fc;
             border-radius: 16px;
             padding: 40px;
             width: 480px;
@@ -67,13 +77,11 @@ $stmt->close();
             transition: all 0.3s ease-in-out;
         }
 
-        /* Container එක මතට Mouse එක ගෙන යන විට (Hover) Blue පාටින් Glow වීම */
         .container:hover {
             border-color: #3b82f6;
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
 
-        /* උඩින් ඇති ශීර්ෂය */
         .main-heading {
             font-size: 22px;
             font-weight: bold;
@@ -82,7 +90,6 @@ $stmt->close();
             margin-top: 10px;
         }
 
-        /* මැද ඇති Position කොටස */
         .position-wrapper {
             display: flex;
             flex-direction: column;
@@ -113,7 +120,6 @@ $stmt->close();
             font-weight: 500;
         }
 
-        /* යටින් ඇති බටන් එක (දෙවන රූපයේ පාට සහ hover efekt එක) */
         .back-btn-container {
             width: 100%;
             margin-bottom: 10px;
@@ -122,9 +128,9 @@ $stmt->close();
         .back-btn {
             display: block;
             width: 100%;
-            background: #fbbf24; /* දෙවන රූපයේ ඇති කහ/තැඹිලි පාට */
+            background: #fbbf24;
             border: none;
-            color: #111; /* මුලින් කළු පාට අකුරු */
+            color: #111;
             padding: 14px 0;
             border-radius: 10px;
             font-size: 15px;
@@ -136,10 +142,9 @@ $stmt->close();
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* බටන් එක මතට Mouse එක ගෙන යන විට (Hover) පාට මාරු වීම */
         .back-btn:hover {
-            background:  #fbbf24; /* ටිකක් තද කහ/තැඹිලි පාටක් */
-            color: #ffffff;      /* අකුරු සුදු පාටට හැරේ */
+            background: #d97706;
+            color: #ffffff;
         }
 
         .no-position {
@@ -151,12 +156,10 @@ $stmt->close();
 <body>
 
     <div class="container">
-        <!-- 1. උඩින් ඇති ශීර්ෂය -->
         <div class="main-heading">
             Your Waiting List Position
         </div>
 
-        <!-- 2. මැද ඇති Position කොටස -->
         <?php if ($waiting): ?>
             <div class="position-wrapper">
                 <div class="position-box">
@@ -171,7 +174,6 @@ $stmt->close();
             </div>
         <?php endif; ?>
 
-        <!-- 3. යටින් ඇති Back to Dashboard බටන් එක -->
         <div class="back-btn-container">
             <a href="index.php" class="back-btn">&larr; Back to Dashboard</a>
         </div>
