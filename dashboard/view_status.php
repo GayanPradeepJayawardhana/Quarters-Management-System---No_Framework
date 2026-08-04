@@ -47,7 +47,7 @@ if (isset($_GET['search'])) {
                              WHERE (a2.applied_date < a1.applied_date) 
                                 OR (a2.applied_date = a1.applied_date AND a2.employee_marks > a1.employee_marks)
                                 OR (a2.applied_date = a1.applied_date AND a2.employee_marks = a1.employee_marks AND a2.id <= a1.id)
-                             ) AS calculated_position
+                            ) AS calculated_position
                       FROM waiting_list a1 
                       WHERE a1.user_id = ?";
                 
@@ -186,26 +186,35 @@ if (isset($_GET['search'])) {
             margin-bottom: 20px;
             font-weight: bold;
         }
-        .back-link {
-            display: block;
-            width: fit-content;
-            box-sizing: border-box;
-            margin-top: 30px;
-            padding: 12px 20px;
-            background-color: #eef2f7;
-            border: 1.5px solid #b0c4de;
-            border-radius: 8px;
-            color: #0066cc;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        .back-btn {
+            background-color: #f0f4f8;
+            border: 1px solid #9fc5e8;
+            color: #3b78c2;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: bold;
             transition: background-color 0.2s, border-color 0.2s;
+            width: auto;
+            text-decoration: none;
+            box-shadow: none;
+            margin-top: 25px;
         }
-        .back-link:hover { 
-            background-color: #e2e8f0; 
+
+        .back-btn:hover {
+            background-color: #d9e8f5;
             border-color: #3b78c2;
+            color: #245892;
+        }
+
+        .no-position {
+            font-size: 15px;
+            color: #6b7280;
         }
     </style>
 </head>
@@ -282,7 +291,7 @@ if (isset($_GET['search'])) {
                 </div>
             <?php endif; ?>
             
-            <a href="index.php" class="back-link">&larr; Back to Dashboard</a>
+            <a href="index.php" class="back-btn">&larr; Back to Dashboard</a>
         </div>
     </div>
 </body>

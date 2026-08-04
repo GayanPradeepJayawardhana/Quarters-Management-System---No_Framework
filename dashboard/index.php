@@ -2,11 +2,27 @@
 // Database connection include කිරීම
 require_once '../db.php';
 
-// Session එකකින් user name එක ලබාගැනීම
+// Session එකකින් user name සහ user_id එක ලබාගැනීම
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Applicant';
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+
+// දත්ත සමුදායෙන් (Database) අදාල පරිශීලකයාගේ නොකියවූ (unread) notification ගණන ලබාගැනීම
+$unread_count = 0;
+if ($user_id > 0 && isset($conn)) {
+    $stmt = $conn->prepare("SELECT COUNT(*) as unread_count FROM notifications WHERE user_id = ? AND is_read = 0");
+    if ($stmt) {
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $unread_count = (int)$row['unread_count'];
+        }
+        $stmt->close();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -94,7 +110,9 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Applicant
         <div class="dashboard-grid-2">
             
             <div class="dashboard-card position-relative">
-                <span class="badge badge-notification">1 New</span>
+                <?php if ($unread_count > 0): ?>
+                    <span class="badge badge-notification"><?php echo $unread_count; ?> New</span>
+                <?php endif; ?>
                 <div class="card-icon">
                     <img src="images/bell1.png" alt="Notifications">
                 </div>
