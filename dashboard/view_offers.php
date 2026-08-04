@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($response == 'later') {
         if (!empty($offer_id)) {
             // Update created_at timestamp to move the request to the bottom of the queue/list
-            $update_sql = "UPDATE applications SET created_at = NOW(), status = 'pending' WHERE id = ? AND user_id = ?";
+            $update_sql = "UPDATE respond_to_offer SET created_at = NOW(), status = 'pending' WHERE id = ? AND user_id = ?";
             $update_stmt = $conn->prepare($update_sql);
             $update_stmt->bind_param("ii", $offer_id, $user_id);
             $update_stmt->execute();
@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     } elseif ($response == 'deny') {
         if (!empty($offer_id)) {
-            // Completely delete the user application from the database
-            $delete_sql = "DELETE FROM applications WHERE id = ? AND user_id = ?";
+            // Completely delete the user application offer from the database
+            $delete_sql = "DELETE FROM respond_to_offer WHERE id = ? AND user_id = ?";
             $delete_stmt = $conn->prepare($delete_sql);
             $delete_stmt->bind_param("ii", $offer_id, $user_id);
             $delete_stmt->execute();
@@ -44,8 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Check if user still has an approved active application offer
-$check_sql = "SELECT * FROM applications WHERE user_id = ? AND status = 'approved' ORDER BY created_at DESC LIMIT 1";
+// Check if user still has an approved active application offer in respond_to_offer table
+$check_sql = "SELECT * FROM respond_to_offer WHERE user_id = ? AND status = 'approved' ORDER BY created_at DESC LIMIT 1";
 $check_stmt = $conn->prepare($check_sql);
 $check_stmt->bind_param("i", $user_id);
 $check_stmt->execute();
@@ -90,7 +90,6 @@ if ($check_result->num_rows > 0) {
         }
 
         .offer-card:hover {
-            
             border-color: #3b82f6;
             box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
         }
