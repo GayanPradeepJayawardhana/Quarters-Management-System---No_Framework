@@ -47,9 +47,9 @@ if (isset($_GET['search'])) {
                              WHERE (a2.applied_date < a1.applied_date) 
                                 OR (a2.applied_date = a1.applied_date AND a2.employee_marks > a1.employee_marks)
                                 OR (a2.applied_date = a1.applied_date AND a2.employee_marks = a1.employee_marks AND a2.id <= a1.id)
-                            ) AS calculated_position
-                      FROM waiting_list a1 
-                      WHERE a1.user_id = ?";
+                             ) AS calculated_position
+                     FROM waiting_list a1 
+                     WHERE a1.user_id = ?";
                 
                 $pos_stmt = $conn->prepare($pos_sql);
                 $pos_stmt->bind_param("i", $app_user_id);
@@ -73,67 +73,97 @@ if (isset($_GET['search'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quarter Status</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Quarter Status - Department of Railways</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome අයිකන සඳහා -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fcfbfa;
+            color: #111111;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .slr-logo {
+            height: 70px !important;
+            width: auto !important;
+            max-width: none;
+            object-fit: contain;
         }
         .dashboard-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            flex-grow: 1;
+            padding: 30px 15px;
         }
         .status-container {
             width: 100%;
             max-width: 750px;
-            margin: 20px;
             padding: 40px;
             background: #ffffff;
-            border: 2px solid #6fa8dc;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+        .status-container:hover {
+            border-color: #b59410;
+            box-shadow: 0 10px 25px rgba(74, 14, 21, 0.08);
         }
         .status-container h2 {
-            color: #111;
-            margin-bottom: 30px;
+            color: #2c1d1d;
+            margin-bottom: 5px;
             text-align: center;
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: 700;
         }
         .search-box-wrapper {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 30px;
         }
         .search-box-wrapper input[type="text"] {
-            width: 60%;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 4px;
+            width: 65%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, ring 0.2s;
+        }
+        .search-box-wrapper input[type="text"]:focus {
+            border-color: #5c060d;
+            box-shadow: 0 0 0 3px rgba(92, 6, 13, 0.1);
         }
         .search-box-wrapper button {
-            padding: 10px 20px;
-            background-color: #9fc5e8;
-            border: 1px solid #3b78c2;
-            color: #000;
-            font-weight: bold;
-            border-radius: 4px;
+            padding: 12px 24px;
+            background-color: #5c060d;
+            border: none;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
         }
         .search-box-wrapper button:hover {
-            background-color: #76a5df;
+            background-color: #4a050a;
+            color: #f3d47d;
         }
         .approval-progress-title {
             font-size: 16px;
             font-weight: bold;
-            text-decoration: underline;
+            color: #5c060d;
+            border-bottom: 2px solid #b59410;
+            padding-bottom: 6px;
             margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
         .approval-row {
             display: flex;
@@ -142,92 +172,115 @@ if (isset($_GET['search'])) {
             gap: 15px;
         }
         .approval-label {
-            width: 140px;
-            font-weight: 500;
+            width: 150px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
         }
         .checkbox-box {
-            width: 25px;
-            height: 25px;
-            border: 1px solid #333;
+            width: 35px;
+            height: 35px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             font-size: 16px;
-            background: #fff;
+            background: #fdf8f0;
         }
         .reason-label {
             width: 70px;
-            font-weight: 500;
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
         }
         .reason-input {
             flex-grow: 1;
-            padding: 8px 12px;
-            border: 1px solid #999;
-            border-radius: 4px;
-            background-color: #fff;
-            color: #333;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background-color: #f9fafb;
+            color: #374151;
             font-size: 14px;
         }
         .additional-info {
             margin-top: 30px;
             font-size: 15px;
+            background-color: #fdf8f0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #b59410;
         }
         .additional-info ul {
-            list-style-type: disc;
-            padding-left: 20px;
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
         }
         .additional-info li {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            color: #374151;
         }
         .error-msg {
-            color: #cc0000;
+            color: #dc2626;
             text-align: center;
             margin-bottom: 20px;
             font-weight: bold;
+            background-color: #fef2f2;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #fca5a5;
         }
         .back-btn {
-            background-color: #f0f4f8;
-            border: 1px solid #9fc5e8;
-            color: #3b78c2;
-            padding: 8px 16px;
-            border-radius: 4px;
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            color: #5c060d;
+            padding: 10px 18px;
+            border-radius: 8px;
             cursor: pointer;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-size: 13px;
-            font-weight: bold;
-            transition: background-color 0.2s, border-color 0.2s;
-            width: auto;
+            font-weight: 600;
             text-decoration: none;
-            box-shadow: none;
+            transition: all 0.2s ease;
             margin-top: 25px;
         }
-
         .back-btn:hover {
-            background-color: #d9e8f5;
-            border-color: #3b78c2;
-            color: #245892;
-        }
-
-        .no-position {
-            font-size: 15px;
-            color: #6b7280;
+            background-color: #5c060d;
+            border-color: #5c060d;
+            color: #f3d47d;
         }
     </style>
 </head>
 <body>
+
+    <!-- Top Dark Red Header Bar -->
+    <header class="bg-[#5c060d] text-white py-4 px-6 md:px-12 shadow-md flex flex-col md:flex-row justify-between items-center relative border-b-4 border-[#b59410]">
+        <!-- Logo and Titles -->
+        <div class="flex items-center space-x-4">
+            <img src="images2/logo.png" alt="Sri Lanka Railway Logo" class="slr-logo">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-wider">SRI LANKA RAILWAY</h1>
+                <h2 class="text-sm md:text-base font-semibold tracking-wide text-amber-200">QUARTER ALLOCATION SYSTEM</h2>
+                <p class="text-xs italic text-gray-300">Moving the Nation, Connecting the Future</p>
+            </div>
+        </div>
+    </header>
+
     <div class="dashboard-container">
         <div class="status-container">
+            <div class="text-[#b59410] text-2xl text-center mb-1"><i class="fas fa-clipboard-list"></i></div>
             <h2>View Status</h2>
+            <p class="text-center text-gray-500 text-sm mb-6">Track your application verification progress.</p>
             
             <!-- Search Form pointing to the same page -->
             <form method="GET" action="">
                 <div class="search-box-wrapper">
                     <input type="text" name="computer_no" placeholder="Search by Computer No" value="<?php echo htmlspecialchars($search_query); ?>" required>
-                    <button type="submit" name="search">Search</button>
+                    <button type="submit" name="search"><i class="fas fa-search mr-1"></i> Search</button>
                 </div>
             </form>
 
@@ -239,12 +292,43 @@ if (isset($_GET['search'])) {
                 <div class="approval-progress-title">Approval Progress</div>
 
                 <?php 
+                // පිළිවෙළට ස්ටෙප්ස් 4 නිර්වචනය කිරීම
+                $boss_status  = $application['boss_status'] ?? 'pending';
+                $boss_reason  = $application['boss_reason'] ?? '';
+
+                $file_status  = $application['file_status'] ?? 'pending';
+                $file_reason  = $application['file_reason'] ?? '';
+
+                $clerk_status = $application['clerk_status'] ?? 'pending';
+                $clerk_reason = $application['clerk_reason'] ?? '';
+
+                $final_status = $application['final_status'] ?? 'pending';
+                $final_reason = $application['final_reason'] ?? '';
+
+                // 1. Immediate Boss reject කර ඇත්නම් අනෙක් සියල්ලටම ❌ යෙදීම
+                if ($boss_status === 'rejected') {
+                    if ($file_status === 'pending') { $file_status = 'rejected'; $file_reason = 'Previous step rejected'; }
+                    if ($clerk_status === 'pending') { $clerk_status = 'rejected'; $clerk_reason = 'Previous step rejected'; }
+                    if ($final_status === 'pending') { $final_status = 'rejected'; $final_reason = 'Previous step rejected'; }
+                }
+
+                // 2. Personal File reject කර ඇත්නම් අනෙක් පසුව එන ඒවාට ❌ යෙදීම
+                if ($file_status === 'rejected') {
+                    if ($clerk_status === 'pending') { $clerk_status = 'rejected'; $clerk_reason = 'Previous step rejected'; }
+                    if ($final_status === 'pending') { $final_status = 'rejected'; $final_reason = 'Previous step rejected'; }
+                }
+
+                // 3. Subject Clerk reject කර ඇත්නම් Final Approval එකට ❌ යෙදීම
+                if ($clerk_status === 'rejected') {
+                    if ($final_status === 'pending') { $final_status = 'rejected'; $final_reason = 'Previous step rejected'; }
+                }
+
                 // Helper function to render checkbox symbol and color
                 function renderStatusBox($status) {
                     if ($status === 'approved') {
-                        return '<span style="color: green;">✅</span>';
+                        return '<span style="color: #16a34a;">✅</span>';
                     } elseif ($status === 'rejected') {
-                        return '<span style="color: red;">❌</span>';
+                        return '<span style="color: #dc2626;">❌</span>';
                     }
                     return ''; // Blank if pending
                 }
@@ -253,33 +337,33 @@ if (isset($_GET['search'])) {
                 <!-- 1. Immediate Boss -->
                 <div class="approval-row">
                     <div class="approval-label">Immediate Boss</div>
-                    <div class="checkbox-box"><?php echo renderStatusBox($application['boss_status']); ?></div>
+                    <div class="checkbox-box"><?php echo renderStatusBox($boss_status); ?></div>
                     <div class="reason-label">Reason:</div>
-                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($application['boss_reason'] ?? ''); ?>" readonly>
+                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($boss_reason); ?>" readonly>
                 </div>
 
                 <!-- 2. Personal File -->
                 <div class="approval-row">
                     <div class="approval-label">Personal File</div>
-                    <div class="checkbox-box"><?php echo renderStatusBox($application['file_status']); ?></div>
+                    <div class="checkbox-box"><?php echo renderStatusBox($file_status); ?></div>
                     <div class="reason-label">Reason:</div>
-                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($application['file_reason'] ?? ''); ?>" readonly>
+                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($file_reason); ?>" readonly>
                 </div>
 
                 <!-- 3. Subject Clerk -->
                 <div class="approval-row">
                     <div class="approval-label">Subject clerk</div>
-                    <div class="checkbox-box"><?php echo renderStatusBox($application['clerk_status']); ?></div>
+                    <div class="checkbox-box"><?php echo renderStatusBox($clerk_status); ?></div>
                     <div class="reason-label">Reason:</div>
-                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($application['clerk_reason'] ?? ''); ?>" readonly>
+                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($clerk_reason); ?>" readonly>
                 </div>
 
                 <!-- 4. Final Approval -->
                 <div class="approval-row">
                     <div class="approval-label">Final Approval</div>
-                    <div class="checkbox-box"><?php echo renderStatusBox($application['final_status']); ?></div>
+                    <div class="checkbox-box"><?php echo renderStatusBox($final_status); ?></div>
                     <div class="reason-label">Reason:</div>
-                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($application['final_reason'] ?? ''); ?>" readonly>
+                    <input type="text" class="reason-input" value="<?php echo htmlspecialchars($final_reason); ?>" readonly>
                 </div>
 
                 <!-- Additional Details -->
@@ -291,8 +375,14 @@ if (isset($_GET['search'])) {
                 </div>
             <?php endif; ?>
             
-            <a href="index.php" class="back-btn">&larr; Back to Dashboard</a>
+            <a href="index.php" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
         </div>
     </div>
+
 </body>
 </html>
+<?php 
+if (isset($conn)) {
+    $conn->close(); 
+}
+?>

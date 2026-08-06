@@ -9,33 +9,28 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 $message = '';
-$accepted = false; // Flag to track if the offer has been accepted
+$accepted = false;
 
-// Handle form submission before checking for offers
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response = $_POST['response'] ?? '';
     $offer_id = $_POST['offer_id'] ?? '';
     
     if ($response == 'accept') {
-        $accepted = true; // Set flag to true so buttons are hidden and success box shows
-        // Show success alert message for accepting
+        $accepted = true;
         $message = '<div class="alert-success">
             Collect your quarter documents within 2 weeks through BDF, Unless your quarter allocation will be removed.
         </div>';
     } elseif ($response == 'later') {
         if (!empty($offer_id)) {
-            // Update created_at timestamp to move the request to the bottom of the queue/list
             $update_sql = "UPDATE respond_to_offer SET created_at = NOW(), status = 'pending' WHERE id = ? AND user_id = ?";
             $update_stmt = $conn->prepare($update_sql);
             $update_stmt->bind_param("ii", $offer_id, $user_id);
             $update_stmt->execute();
         }
-        // Redirect directly to the dashboard (index.php) after clicking 'Later' without showing any message here
         header("Location: index.php");
         exit();
     } elseif ($response == 'deny') {
         if (!empty($offer_id)) {
-            // Completely delete the user application offer from the database
             $delete_sql = "DELETE FROM respond_to_offer WHERE id = ? AND user_id = ?";
             $delete_stmt = $conn->prepare($delete_sql);
             $delete_stmt->bind_param("ii", $offer_id, $user_id);
@@ -44,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Check if user still has an approved active application offer in respond_to_offer table
 $check_sql = "SELECT * FROM respond_to_offer WHERE user_id = ? AND status = 'approved' ORDER BY created_at DESC LIMIT 1";
 $check_stmt = $conn->prepare($check_sql);
 $check_stmt->bind_param("i", $user_id);
@@ -68,36 +62,93 @@ if ($check_result->num_rows > 0) {
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: #fcfbfa;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            flex-direction: column;
+            min-height: 100vh;
             margin: 0;
         }
 
-        /* Main Card with Updated Border and Hover Glow Effect */
+        /* Dashboard එකේ ඇති Header එකට සමාන වන ලෙස නිවැරදි කරන ලද CSS */
+        .railway-header {
+            width: 100%;
+            background: linear-gradient(90deg, #5c060d 0%, #3d0307 100%);
+            border-bottom: 4px solid #b59410;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .railway-header img {
+            height: 60px; /* ලාංඡනයේ ප්‍රමාණය Dashboard එකේ මෙන් විශාල කර ඇත */
+            width: auto;
+            margin-right: 20px;
+        }
+
+        .railway-header .header-text h1 {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .railway-header .header-text h2 {
+            color: #fde047;
+            font-size: 15px;
+            font-weight: 600;
+            margin: 3px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        .railway-header .header-text p {
+            color: #e5e7eb;
+            font-size: 13px;
+            font-style: italic;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* Main Content Wrapper */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main Card Styles */
         .offer-card {
             background: #ffffff;
             width: 550px;
             padding: 40px;
-            border-radius: 25px;
-            border: 2px solid #007bff;
-            box-shadow: 0 1px 2px rgba(0, 123, 255, 0.15);
+            border-radius: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
             text-align: center;
             box-sizing: border-box;
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .offer-card:hover {
-            border-color: #3b82f6;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+            border-color: #b59410;
+            box-shadow: 0 12px 30px rgba(74, 14, 21, 0.08);
         }
 
         .offer-card h2 {
-            color: #2c3e50;
+            color: #2c1d1d;
             margin-bottom: 25px;
             font-size: 24px;
+            font-weight: 700;
         }
 
         .offer-card p {
@@ -134,15 +185,15 @@ if ($check_result->num_rows > 0) {
 
         /* Accept Box Styles */
         .accept {
-            background-color: #e8f5e9;
-            border-color: #c8e6c9;
+            background-color: #fdf8f0;
+            border-color: #b59410;
         }
         .accept .icon {
-            background-color: #2e7d32;
+            background-color: #5c060d;
             color: white;
         }
         .accept span {
-            color: #2e7d32;
+            color: #5c060d;
             font-weight: 600;
         }
 
@@ -187,24 +238,27 @@ if ($check_result->num_rows > 0) {
 
         /* Back Button Styles */
         .back-btn {
-            background-color: #eef2f7;
-            border: 1px solid #d0d7de;
-            color: #007bff;
-            padding: 10px 18px;
+            background-color: #5c060d;
+            border: 1px solid #5c060d;
+            color: #ffffff;
+            padding: 12px 22px;
             border-radius: 8px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            transition: all 0.2s ease;
             float: left;
             text-decoration: none;
+            box-shadow: 0 3px 6px rgba(92, 6, 13, 0.2);
         }
 
         .back-btn:hover {
-            background-color: #e2e8f0;
+            background-color: #4a050a;
+            color: #f3d47d;
+            border-color: #4a050a;
         }
 
         .alert-success {
@@ -228,49 +282,62 @@ if ($check_result->num_rows > 0) {
 </head>
 <body>
 
-    <div class="offer-card">
-        <h2>Respond to Offer</h2>
-        
-        <?php echo $message; ?>
+    <!-- Header Section (Dashboard එකේ ආකාරයටම සකස් කරන ලදී) -->
+    <header class="railway-header">
+        <img src="images2/logo.png" alt="Sri Lanka Railway Logo">
+        <div class="header-text">
+            <h1>SRI LANKA RAILWAY</h1>
+            <h2>QUARTER ALLOCATION SYSTEM</h2>
+            <p>Moving the Nation, Connecting the Future</p>
+        </div>
+    </header>
 
-        <?php if ($offer_exists): ?>
-            <?php if (!$accepted): ?>
-                <p>You have been assigned to a quarter, Do you,</p>
-                
-                <form method="POST" action="">
-                    <input type="hidden" name="offer_id" value="<?php echo $offer_data['id']; ?>">
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="offer-card">
+            <h2>Respond to Offer</h2>
+            
+            <?php echo $message; ?>
+
+            <?php if ($offer_exists): ?>
+                <?php if (!$accepted): ?>
+                    <p>You have been assigned to a quarter, Do you,</p>
                     
-                    <div class="options-container">
-                        <!-- Accept Option -->
-                        <button type="submit" name="response" value="accept" class="option-box accept">
-                            <div class="icon">&#10003;</div>
-                            <span>Accept now</span>
-                        </button>
+                    <form method="POST" action="">
+                        <input type="hidden" name="offer_id" value="<?php echo $offer_data['id']; ?>">
+                        
+                        <div class="options-container">
+                            <!-- Accept Option -->
+                            <button type="submit" name="response" value="accept" class="option-box accept">
+                                <div class="icon">&#10003;</div>
+                                <span>Accept now</span>
+                            </button>
 
-                        <!-- Later Option -->
-                        <button type="submit" name="response" value="later" class="option-box later">
-                            <div class="icon">&#9202;</div>
-                            <span>Later</span>
-                        </button>
+                            <!-- Later Option -->
+                            <button type="submit" name="response" value="later" class="option-box later">
+                                <div class="icon">&#9202;</div>
+                                <span>Later</span>
+                            </button>
 
-                        <!-- Deny Option -->
-                        <button type="submit" name="response" value="deny" class="option-box deny">
-                            <div class="icon">&#10005;</div>
-                            <span>Deny</span>
-                        </button>
-                    </div>
-                </form>
+                            <!-- Deny Option -->
+                            <button type="submit" name="response" value="deny" class="option-box deny">
+                                <div class="icon">&#10005;</div>
+                                <span>Deny</span>
+                            </button>
+                        </div>
+                    </form>
+                <?php endif; ?>
+            <?php else: ?>
+                <div class="no-offer">
+                    <p>No offers available at the moment.<br>You will be notified when a quarter becomes available.</p>
+                </div>
             <?php endif; ?>
-        <?php else: ?>
-            <div class="no-offer">
-                <p>No offers available at the moment.<br>You will be notified when a quarter becomes available.</p>
-            </div>
-        <?php endif; ?>
 
-        <a href="index.php" class="back-btn">
-            &#8592; Back to Dashboard
-        </a>
-        <div style="clear: both;"></div>
+            <a href="index.php" class="back-btn">
+                &#8592; Back to Dashboard
+            </a>
+            <div style="clear: both;"></div>
+        </div>
     </div>
 
 </body>

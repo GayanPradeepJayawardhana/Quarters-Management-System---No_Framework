@@ -29,19 +29,28 @@ if ($user_id > 0 && isset($conn)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ශ්‍රී ලංකා දුම්රිය දෙපාර්තමේන්තුව - අයදුම්කරුගේ පුවරුව</title>
+    <title>Department of Railways - Applicant's Board</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome අයිකන සඳහා -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ලාංඡනය විකෘති වීම වළක්වා නිවැරදි ප්‍රමාණය පාලනය කිරීමට */
+        .slr-logo {
+            height: 70px !important;
+            width: auto !important;
+            max-width: none;
+            object-fit: contain;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased text-gray-800 m-0 p-0">
 
     <!-- Top Dark Red Header Bar -->
-    <header class="bg-[#5c060d] text-white py-4 px-6 md:px-12 shadow-md flex flex-col md:flex-row justify-between items-center relative">
+    <header class="bg-[#5c060d] text-white py-4 px-6 md:px-12 shadow-md flex flex-col md:flex-row justify-between items-center relative border-b-4 border-[#b59410]">
         <!-- Logo and Titles -->
         <div class="flex items-center space-x-4 mb-4 md:mb-0">
-            <img src="images2/logo.png" alt="Sri Lanka Railway Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain">
+            <img src="images2/logo.png" alt="Sri Lanka Railway Logo" class="slr-logo">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold tracking-wider">SRI LANKA RAILWAY</h1>
                 <h2 class="text-sm md:text-base font-semibold tracking-wide text-amber-200">QUARTER ALLOCATION SYSTEM</h2>

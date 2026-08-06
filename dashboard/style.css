@@ -97,7 +97,7 @@ body {
     background-color: rgba(181, 148, 16, 0.15);
 }
 
-.user-profile i {
+.user-profile i, .profile-trigger i.fa-user {
     font-size: 18px;
     color: #b59410;
 }
@@ -172,9 +172,9 @@ body {
     padding: 20px 0;
 }
 
-.welcome-section {
+.dashboard-header {
     text-align: center;
-    margin: 25px 0 25px 0;
+    margin: 25px 0 10px 0;
 }
 
 .train-icon-separator {
@@ -183,34 +183,23 @@ body {
     margin-bottom: 8px;
 }
 
-.welcome-section h2, .dashboard-title {
+.dashboard-header h2 {
     margin: 0;
     font-size: 26px;
     color: #2c1d1d;
     font-weight: 700;
 }
 
-.welcome-section p, .dashboard-subtitle {
+.dashboard-header p {
     margin-top: 5px;
     color: #555555;
     font-size: 0.9rem;
 }
 
 /* ==========================================
-   4. CARDS GRID SYSTEM (SIDE BY SIDE)
+   4. CARDS GRID SYSTEM (TILES GRID)
    ========================================== */
-.cards-container, .dashboard-grid-3 {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-bottom: 30px;
-    width: 100%;
-    max-width: 1100px;
-    flex-wrap: wrap;
-    padding: 0 20px;
-}
-
-.dashboard-grid-2 {
+.tiles-grid {
     display: flex;
     justify-content: center;
     gap: 25px;
@@ -218,13 +207,13 @@ body {
     width: 100%;
     max-width: 1100px;
     flex-wrap: wrap;
-    padding: 0 20px;
+    padding: 20px;
 }
 
 /* ==========================================
-   5. CARD STYLING & ICON SIZES
+   5. CARD/TILE STYLING & ICON SIZES
    ========================================== */
-.dashboard-card {
+.dashboard-tile {
     background: #ffffff;
     padding: 25px 20px;
     border-radius: 12px;
@@ -236,45 +225,37 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
-.dashboard-card:hover {
+.dashboard-tile:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(74, 14, 21, 0.12);
     border-color: #b59410;
 }
 
-/* Tiles ඇතුළේ ඇති images/icons ප්‍රමාණය විශාල කිරීමට (මෙහි 65px ලෙස සකසා ඇත, අවශ්‍ය නම් වැඩි කරගත හැක) */
-.card-icon img, 
-.tile img, 
-.tile svg, 
-.tile-icon, 
-.icon-box {
-    width: 100px;   
+.tile-icon {
+    width: 100px;  
     height: 100px;  
-    object-fit: 50px;
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 45px;
+    color: #4a0e15;
+    background-color: #fdf8f0;
+    border-radius: 50%;
+    border: 1px solid #f3d47d;
 }
 
-.card-content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-}
-
-.dashboard-card h3 {
+.dashboard-tile h3 {
     margin: 0 0 8px 0;
     font-size: 17px;
     color: #222222;
     font-weight: 600;
 }
 
-.dashboard-card p {
+.dashboard-tile p {
     margin: 0 0 20px 0;
     font-size: 13px;
     color: #666666;
@@ -284,10 +265,6 @@ body {
 /* ==========================================
    6. BUTTONS & BADGES
    ========================================== */
-.position-relative {
-    position: relative;
-}
-
 .badge-notification {
     position: absolute;
     top: 15px;
@@ -302,7 +279,7 @@ body {
     z-index: 10;
 }
 
-.slr-button, .btn-primary {
+.tile-btn {
     background-color: #4a0e15;
     color: #ffffff;
     border: none;
@@ -321,12 +298,8 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.slr-button:hover, .btn-primary:hover {
+.tile-btn:hover {
     background-color: #35090e;
     box-shadow: 0 4px 10px rgba(74, 14, 21, 0.3);
-}
-
-.slr-button i, .btn-primary i {
-    font-size: 11px;
-    color: #b59410;
+    color: #f3d47d;
 }
