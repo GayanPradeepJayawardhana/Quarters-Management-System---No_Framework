@@ -17,8 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
-            // Using MD5 for demo (use password_hash in production)
-            if ($user['password'] == md5($password) || $user['password'] == $password) {
+            
+            // Verifying password for all 4 users (matches password123 via MD5)
+            $hashed_input = md5($password);
+            if ($user['password'] === $hashed_input || $user['password'] === $password) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
@@ -62,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-container {
             background: #ffffff;
             border-radius: 20px;
-            padding: 50px 40px;
+            padding: 40px 30px;
             width: 100%;
             max-width: 420px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -70,11 +72,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         .login-header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
         
         .login-header h1 {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
             color: #1a1a2e;
         }
@@ -82,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-header p {
             color: #666;
             margin-top: 8px;
-            font-size: 15px;
+            font-size: 14px;
         }
         
         .form-group {
@@ -143,24 +145,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 14px;
             text-align: center;
         }
-        
-        .demo-info {
-            margin-top: 25px;
-            padding: 15px;
-            background: #f7fafc;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .demo-info p {
-            font-size: 13px;
-            color: #555;
-            text-align: center;
-        }
-        
-        .demo-info strong {
-            color: #333;
-        }
     </style>
 </head>
 <body>
@@ -187,11 +171,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <button type="submit" class="login-btn">Sign In</button>
         </form>
-        
-        <div class="demo-info">
-            <p><strong>Demo Credentials:</strong><br>
-            Email: john@example.com | Password: password123</p>
-        </div>
     </div>
 </body>
 </html>

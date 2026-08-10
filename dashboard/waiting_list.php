@@ -8,7 +8,7 @@ $password = "";
 $dbname = "applicants_db";
 
 // MySQL සම්බන්ධතාවය සෑදීම
-$conn = new mysqli($host,$username, $password,$dbname);
+$conn = new mysqli($host, $username, $password, $dbname);
 
 // සම්බන්ධතාවය පරීක්ෂා කිරීම
 if ($conn->connect_error) {
@@ -20,42 +20,24 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$user_id = $_SESSION['user_id'];$calculated_position = null;
+$user_id = $_SESSION['user_id'];
+$calculated_position = null;
 $waiting = false;
 
-// 1. applications වගුවෙන් මෙම user_id එකට අදාළ waiting_list_no ඇත්දැයි බැලීම
+// applications වගුවෙන් මෙම user_id එකට අදාළ waiting_list_no ලබා ගැනීම
 $sql = "SELECT waiting_list_no FROM applications WHERE user_id = ?";
-$stmt =$conn->prepare($sql);$stmt->bind_param("i", $user_id);$stmt->execute();
-$result =$stmt->get_result();
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($row =$result->fetch_assoc()) {
-    if ($row['waiting_list_no'] !== null) {$calculated_position = $row['waiting_list_no'];$waiting = true;
+if ($row = $result->fetch_assoc()) {
+    if ($row['waiting_list_no'] !== null) {
+        $calculated_position = $row['waiting_list_no'];
+        $waiting = true;
     }
 }
 $stmt->close();
-
-// 2. waiting_list වගුව හරහා නිවැරදි අනුපිළිවෙළට ස්වයංක්‍රීයව position එක ගණනය කිරීම
-$pos_sql = "SELECT (SELECT COUNT(*) 
-             FROM waiting_list a2 
-             WHERE (a2.applied_date < a1.applied_date) 
-                OR (a2.applied_date = a1.applied_date AND a2.employee_marks > a1.employee_marks)
-                OR (a2.applied_date = a1.applied_date AND a2.employee_marks = a1.employee_marks AND a2.id <= a1.id)
-            ) AS calculated_position
-      FROM waiting_list a1 
-      WHERE a1.user_id = ?";
-
-$pos_stmt = $conn->prepare($pos_sql);
-if ($pos_stmt) {$pos_stmt->bind_param("i", $user_id);$pos_stmt->execute();
-    $pos_result =$pos_stmt->get_result();
-    if ($pos_row =$pos_result->fetch_assoc()) {
-        if ($pos_row['calculated_position'] !== null) {
-            // COUNT එක 0 සිට පටන් ගන්නා නිසා +1 එකක් එකතු කර සැබෑ position එක ලබා ගැනීම
-            $calculated_position =$pos_row['calculated_position'] + 1;
-            $waiting = true;
-        }
-    }
-    $pos_stmt->close();
-}
 ?>
 
 <!DOCTYPE html>
@@ -184,7 +166,7 @@ if ($pos_stmt) {$pos_stmt->bind_param("i", $user_id);$pos_stmt->execute();
             
             <h2>Your Waiting List Position</h2>
             
-            <?php if ($waiting &&$calculated_position !== null): ?>
+            <?php if ($waiting && $calculated_position !== null): ?>
                 <p class="text-gray-500 text-sm mb-4">View your current queue position for quarter allocation.</p>
                 
                 <!-- Position Display Box -->
@@ -209,6 +191,7 @@ if ($pos_stmt) {$pos_stmt->bind_param("i", $user_id);$pos_stmt->execute();
 </body>
 </html>
 <?php 
-if (isset($conn)) {$conn->close(); 
+if (isset($conn)) {
+    $conn->close(); 
 }
 ?>

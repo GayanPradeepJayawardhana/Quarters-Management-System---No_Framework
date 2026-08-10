@@ -92,9 +92,8 @@ $total_notifications = count($notifications);
             flex-direction: column;
         }
         .slr-logo {
-            height: 70px !important;
+            height: 65px !important;
             width: auto !important;
-            max-width: none;
             object-fit: contain;
         }
         .dashboard-container {
@@ -141,7 +140,6 @@ $total_notifications = count($notifications);
             border-left-color: #5c060d;
             box-shadow: 0 6px 15px rgba(92, 6, 13, 0.06);
         }
-        /* බටන් ප්‍රමාණය විශාල කර ඇත */
         .btn {
             background-color: #fdf8f0;
             border: 1px solid #b59410;
@@ -239,7 +237,8 @@ $total_notifications = count($notifications);
     <header class="bg-[#5c060d] text-white py-4 px-6 md:px-12 shadow-md flex flex-col md:flex-row justify-between items-center relative border-b-4 border-[#b59410]">
         <!-- Logo and Titles -->
         <div class="flex items-center space-x-4">
-            <img src="../../dashboard/images/logo.png" alt="Sri Lanka Railway Logo" class="slr-logo">
+            <!-- නිවැරදි path එක සහ slr-logo class එක මෙහි යොදා ඇත -->
+            <img src="../../dashboard/images2/logo.png" alt="Notification Logo" class="slr-logo">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold tracking-wider">SRI LANKA RAILWAY</h1>
                 <h2 class="text-sm md:text-base font-semibold tracking-wide text-amber-200">QUARTER ALLOCATION SYSTEM</h2>
@@ -282,7 +281,6 @@ $total_notifications = count($notifications);
                                 <?php echo htmlspecialchars($notif['message'] ?? $notif['description'] ?? ''); ?>
                             </p>
                             <hr class="border-gray-100 mb-4">
-                            <!-- justify-end මඟින් බටන් දෙක දකුණු පැත්තට (Right side) ගෙන ඇත -->
                             <div class="flex items-center justify-end space-x-3">
                                 <div id="mark-read-btn-wrap-<?php echo $notif['id']; ?>">
                                     <?php if (!isset($notif['is_read']) || $notif['is_read'] == 0): ?>
@@ -339,7 +337,6 @@ $total_notifications = count($notifications);
                     showToast(data.message);
 
                     if (action === 'mark_read') {
-                        // ස්ටේටස් එක 'Read' ලෙස මාරු කිරීම සහ Mark as read බටන් එක ඉවත් කිරීම
                         document.getElementById('status-text-' + id).innerHTML = '<span class="text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded border border-green-200"><i class="fas fa-check-circle mr-1"></i> Read</span>';
                         let readBtnWrap = document.getElementById('mark-read-btn-wrap-' + id);
                         if (readBtnWrap) readBtnWrap.innerHTML = '';
@@ -347,7 +344,6 @@ $total_notifications = count($notifications);
                         let box = document.getElementById('notif-box-' + id);
                         if (box) box.remove();
 
-                        // සියලුම නොටිෆිකේෂන් මැකී ගියේ නම් පිටුව Refresh කිරීම
                         let container = document.getElementById('notificationsContainer');
                         if (container && container.querySelectorAll('.notif-card').length === 0) {
                             location.reload();
