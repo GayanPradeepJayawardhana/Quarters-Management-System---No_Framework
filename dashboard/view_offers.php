@@ -9,17 +9,19 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 $message = '';
-$accepted = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response = $_POST['response'] ?? '';
     $offer_id = $_POST['offer_id'] ?? '';
     
     if ($response == 'accept') {
-        $accepted = true;
-        $message = '<div class="alert-success">
-            Collect your quarter documents within 2 weeks through BDF, Unless your quarter allocation will be removed.
-        </div>';
+        if (!empty($offer_id)) {
+            // 'accept' කළ විට database එකේ status එක 'accepted' ලෙස update කිරීම
+            $update_sql = "UPDATE respond_to_offer SET status = 'accepted' WHERE id = ? AND user_id = ?";
+            $update_stmt = $conn->prepare($update_sql);
+            $update_stmt->bind_param("ii", $offer_id, $user_id);
+            $update_stmt->execute();
+        }
     } elseif ($response == 'later') {
         if (!empty($offer_id)) {
             $update_sql = "UPDATE respond_to_offer SET created_at = NOW(), status = 'pending' WHERE id = ? AND user_id = ?";
@@ -36,10 +38,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $delete_stmt->bind_param("ii", $offer_id, $user_id);
             $delete_stmt->execute();
         }
+        header("Location: index.php");
+        exit();
     }
 }
 
-$check_sql = "SELECT * FROM respond_to_offer WHERE user_id = ? AND status = 'approved' ORDER BY created_at DESC LIMIT 1";
+// Database එකෙන් අදාළ user ගේ status එක 'approved' හෝ 'accepted' ද යන්න පරීක්ෂා කිරීම
+$check_sql = "SELECT * FROM respond_to_offer WHERE user_id = ? AND status IN ('approved', 'accepted') ORDER BY created_at DESC LIMIT 1";
 $check_stmt = $conn->prepare($check_sql);
 $check_stmt->bind_param("i", $user_id);
 $check_stmt->execute();
@@ -47,10 +52,17 @@ $check_result = $check_stmt->get_result();
 
 $offer_exists = false;
 $offer_data = null;
+$is_accepted = false;
 
 if ($check_result->num_rows > 0) {
     $offer_exists = true;
     $offer_data = $check_result->fetch_assoc();
+    if ($offer_data['status'] == 'accepted') {
+        $is_accepted = true;
+        $message = '<div class="alert-success">
+            Collect your quarter documents within 2 weeks through BDF, Unless your quarter allocation will be removed.
+        </div>';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -69,7 +81,6 @@ if ($check_result->num_rows > 0) {
             margin: 0;
         }
 
-        /* Dashboard එකේ ඇති Header එකට සමාන වන ලෙස නිවැරදි කරන ලද CSS */
         .railway-header {
             width: 100%;
             background: linear-gradient(90deg, #5c060d 0%, #3d0307 100%);
@@ -82,7 +93,7 @@ if ($check_result->num_rows > 0) {
         }
 
         .railway-header img {
-            height: 60px; /* ලාංඡනයේ ප්‍රමාණය Dashboard එකේ මෙන් විශාල කර ඇත */
+            height: 60px;
             width: auto;
             margin-right: 20px;
         }
@@ -117,7 +128,6 @@ if ($check_result->num_rows > 0) {
             line-height: 1.2;
         }
 
-        /* Main Content Wrapper */
         .main-content {
             flex: 1;
             display: flex;
@@ -126,7 +136,6 @@ if ($check_result->num_rows > 0) {
             padding: 20px;
         }
 
-        /* Main Card Styles */
         .offer-card {
             background: #ffffff;
             width: 550px;
@@ -149,12 +158,6 @@ if ($check_result->num_rows > 0) {
             margin-bottom: 25px;
             font-size: 24px;
             font-weight: 700;
-        }
-
-        .offer-card p {
-            color: #555;
-            font-size: 15px;
-            margin-bottom: 35px;
         }
 
         .options-container {
@@ -183,7 +186,6 @@ if ($check_result->num_rows > 0) {
             transform: translateY(-3px);
         }
 
-        /* Accept Box Styles */
         .accept {
             background-color: #fdf8f0;
             border-color: #b59410;
@@ -197,7 +199,6 @@ if ($check_result->num_rows > 0) {
             font-weight: 600;
         }
 
-        /* Later Box Styles */
         .later {
             background-color: #fffde7;
             border-color: #fff9c4;
@@ -211,7 +212,6 @@ if ($check_result->num_rows > 0) {
             font-weight: 600;
         }
 
-        /* Deny Box Styles */
         .deny {
             background-color: #ffebee;
             border-color: #ffcdd2;
@@ -236,7 +236,6 @@ if ($check_result->num_rows > 0) {
             margin-bottom: 12px;
         }
 
-        /* Back Button Styles */
         .back-btn {
             background-color: #5c060d;
             border: 1px solid #5c060d;
@@ -282,7 +281,6 @@ if ($check_result->num_rows > 0) {
 </head>
 <body>
 
-    <!-- Header Section (Dashboard එකේ ආකාරයටම සකස් කරන ලදී) -->
     <header class="railway-header">
         <img src="images2/logo.png" alt="Sri Lanka Railway Logo">
         <div class="header-text">
@@ -292,7 +290,6 @@ if ($check_result->num_rows > 0) {
         </div>
     </header>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="offer-card">
             <h2>Respond to Offer</h2>
@@ -300,8 +297,8 @@ if ($check_result->num_rows > 0) {
             <?php echo $message; ?>
 
             <?php if ($offer_exists): ?>
-                <?php if (!$accepted): ?>
-                    <p>You have been assigned to a quarter, Do you,</p>
+                <?php if (!$is_accepted): ?>
+                    <p style="color: #555; font-size: 15px; margin-bottom: 35px;">You have been assigned to a quarter, Do you,</p>
                     
                     <form method="POST" action="">
                         <input type="hidden" name="offer_id" value="<?php echo $offer_data['id']; ?>">
