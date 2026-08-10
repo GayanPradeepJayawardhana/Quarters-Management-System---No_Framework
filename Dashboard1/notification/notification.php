@@ -241,8 +241,7 @@ $total_notifications = count($notifications);
             <img src="../../dashboard/images2/logo.png" alt="Notification Logo" class="slr-logo">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold tracking-wider">SRI LANKA RAILWAY</h1>
-                <h2 class="text-sm md:text-base font-semibold tracking-wide text-amber-200">QUARTER ALLOCATION SYSTEM</h2>
-                <p class="text-xs italic text-gray-300">Moving the Nation, Connecting the Future</p>
+                <h2 class="text-sm md:text-base font-semibold tracking-wide text-amber-200">QUARTER MANAGEMENT SYSTEM</h2>
             </div>
         </div>
     </header>

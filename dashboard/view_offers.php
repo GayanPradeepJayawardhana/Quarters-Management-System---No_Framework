@@ -285,8 +285,7 @@ if ($check_result->num_rows > 0) {
         <img src="images2/logo.png" alt="Sri Lanka Railway Logo">
         <div class="header-text">
             <h1>SRI LANKA RAILWAY</h1>
-            <h2>QUARTER ALLOCATION SYSTEM</h2>
-            <p>Moving the Nation, Connecting the Future</p>
+            <h2>QUARTER MANAGEMENT SYSTEM</h2>
         </div>
     </header>
 

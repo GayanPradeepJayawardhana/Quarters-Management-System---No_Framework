@@ -54,48 +54,93 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
+    <title>Edit Profile - Sri Lanka Railway</title>
     <style>
         * {
             box-sizing: border-box;
         }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f0f0f0; 
+            background-color: #f4f4f4; 
+            margin: 0; 
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Railway Header Styling matching Dashboard */
+        .railway-header {
+            background-color: #580000;
+            border-bottom: 3px solid #d4af37;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+        .railway-header img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        .header-text h1 {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+            font-family: Arial, sans-serif;
+        }
+        .header-text h2 {
+            color: #ffeb3b; /* ඔබ පෙන්වූ රූපයේ ඇති bright yellow/gold වර්ණය */
+            font-size: 13px;
+            font-weight: 600;
+            margin: 2px 0 0 0;
+            letter-spacing: 0.5px;
+            text-align: left;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Main Content Wrapper */
+        .main-content {
+            flex: 1;
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 20px; 
+            padding: 40px 20px; 
         }
+
         .container { 
             background-color: #ffffff; 
             padding: 30px; 
             border-radius: 12px; 
             width: 100%; 
-            max-width: 450px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
-            border: 1px solid #d1d5db;
+            max-width: 480px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            border: 1px solid #e5e7eb;
         }
-        h2 { 
+
+        .container h3 { 
             text-align: center; 
             color: #111111; 
             margin-bottom: 25px; 
             font-size: 24px; 
             font-weight: 700;
         }
+
         .form-group { 
             margin-bottom: 20px; 
             display: flex; 
             flex-direction: column; 
         }
+
         label { 
             margin-bottom: 8px; 
             font-size: 16px; 
             color: #111111; 
             font-weight: 600; 
         }
+
         input[type="text"], input[type="email"] { 
             width: 100%; 
             padding: 12px; 
@@ -106,10 +151,12 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
             outline: none; 
             transition: border-color 0.3s;
         }
+
         input[type="text"]:focus, input[type="email"]:focus {
             border-color: #f59e0b; 
             box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
         }
+
         .btn-container { 
             display: flex; 
             justify-content: space-between; 
@@ -117,10 +164,12 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
             margin-top: 30px; 
             gap: 15px; 
         }
-        .btn-custom { 
-            background-color: #ffc107; 
-            color: #111111; 
-            border: 1px solid #e0a800; 
+
+        /* Back Button Style (Maroon) */
+        .btn-back { 
+            background-color: #580000; 
+            color: #ffffff; 
+            border: 1px solid #3d0000; 
             padding: 10px 25px; 
             font-size: 16px; 
             font-weight: bold;
@@ -131,13 +180,35 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
             text-align: center;
             transition: all 0.2s ease-in-out; 
         }
-        .btn-custom:hover { 
-            background-color: #e0a800; 
+        .btn-back:hover { 
+            background-color: #3d0000; 
             color: #ffffff;
-            border-color: #d39e00;
+            box-shadow: 0 4px 10px rgba(88, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Save Button Style (Yellow/Gold) */
+        .btn-save { 
+            background-color: #ffc107; 
+            color: #111111; 
+            border: 1px solid #e0a800; 
+            padding: 10px 30px; 
+            font-size: 16px; 
+            font-weight: bold;
+            border-radius: 6px; 
+            cursor: pointer; 
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s ease-in-out; 
+        }
+        .btn-save:hover { 
+            background-color: #e0a800; 
+            color: #111111;
             box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
             transform: translateY(-2px);
         }
+
         .error-msg { 
             text-align: center; 
             margin-bottom: 15px; 
@@ -152,6 +223,7 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
             font-weight: bold; 
             font-size: 14px; 
         }
+
         @media (min-width: 480px) {
             .container {
                 padding: 40px;
@@ -163,8 +235,6 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
             label { 
                 width: 90px; 
                 margin-bottom: 0; 
-                font-size: 16px; 
-                font-weight: 600; 
             }
             input[type="text"], input[type="email"] { 
                 flex: 1; 
@@ -174,34 +244,46 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
 </head>
 <body>
 
-<div class="container">
-    <h2>✏️ Edit Profile</h2>
-    
-    <?php if(!empty($error)): ?>
-        <div class="error-msg"><?php echo $error; ?></div>
-    <?php endif; ?>
-    
-    <?php if(!empty($success)): ?>
-        <div class="success-msg"><?php echo $success; ?></div>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <div class="form-group">
-            <label for="name">Name :</label>
-            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>" required>
+    <!-- Railway Header matching Dashboard layout -->
+    <header class="railway-header">
+        <img src="../dashboard/images2/logo.png" alt="Sri Lanka Railway Logo">
+        <div class="header-text">
+            <h1>SRI LANKA RAILWAY</h1>
+            <h2>QUARTER MANAGEMENT SYSTEM</h2>
         </div>
+    </header>
 
-        <div class="form-group">
-            <label for="email">Email :</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
-        </div>
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <h3>✏️ Edit Profile</h3>
+            
+            <?php if(!empty($error)): ?>
+                <div class="error-msg"><?php echo $error; ?></div>
+            <?php endif; ?>
+            
+            <?php if(!empty($success)): ?>
+                <div class="success-msg"><?php echo $success; ?></div>
+            <?php endif; ?>
 
-        <div class="btn-container">
-            <a href="../dashboard/index.php" class="btn-custom">&larr; Back</a>
-            <button type="submit" class="btn-custom">Save</button>
+            <form method="POST" action="">
+                <div class="form-group">
+                    <label for="name">Name :</label>
+                    <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
+                </div>
+
+                <div class="btn-container">
+                    <a href="../dashboard/index.php" class="btn-back">&larr; Back</a>
+                    <button type="submit" class="btn-save">Save</button>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+    </div>
 
 </body>
 </html>
