@@ -380,7 +380,7 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
-<?php 
+<?php  
 if (isset($conn)) {
     $conn->close(); 
 }
