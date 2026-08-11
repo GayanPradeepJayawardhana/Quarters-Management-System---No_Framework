@@ -29,7 +29,7 @@ if ($user_id > 0 && isset($conn)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Department of Railways - Applicant's Board</title>
+    <title>Department of Railways - Applicant Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome අයිකන සඳහා -->
