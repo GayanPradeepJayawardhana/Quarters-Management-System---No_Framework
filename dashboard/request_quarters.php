@@ -2,21 +2,24 @@
 session_start();
 require_once '../db.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['nic'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$nic = $_SESSION['nic'];
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $quarter_type = trim($_POST['quarter_type']);
     $application_date = date('Y-m-d');
     
-    $sql = "INSERT INTO applications (user_id, quarter_type, application_date, status) VALUES (?, ?, ?, 'pending')";
+    // Generate computer number (you can customize this logic)
+    $computer_no = 'EMP' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+    
+    $sql = "INSERT INTO applications (nic, computer_no, quarter_type, application_date, status) VALUES (?, ?, ?, ?, 'pending')";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $user_id, $quarter_type, $application_date);
+    $stmt->bind_param("ssss", $nic, $computer_no, $quarter_type, $application_date);
     
     if ($stmt->execute()) {
         $message = '<div style="color: green; text-align: center;">Your application has been submitted successfully!</div>';
@@ -27,15 +30,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pos_row = $pos_result->fetch_assoc();
         $position = $pos_row['count'] + 1;
         
-        $wait_sql = "INSERT INTO waiting_list (user_id, position, quarter_type) VALUES (?, ?, ?)";
+        $wait_sql = "INSERT INTO waiting_list (nic, position, quarter_type) VALUES (?, ?, ?)";
         $wait_stmt = $conn->prepare($wait_sql);
-        $wait_stmt->bind_param("iis", $user_id, $position, $quarter_type);
+        $wait_stmt->bind_param("sis", $nic, $position, $quarter_type);
         $wait_stmt->execute();
         
         // Add notification
-        $notif_sql = "INSERT INTO notifications (user_id, title, message, is_read) VALUES (?, 'Application Received', 'Your quarter application has been received and is under review.', 0)";
+        $notif_sql = "INSERT INTO notifications (nic, title, message, is_read) VALUES (?, 'Application Received', 'Your quarter application has been received and is under review.', 0)";
         $notif_stmt = $conn->prepare($notif_sql);
-        $notif_stmt->bind_param("i", $user_id);
+        $notif_stmt->bind_param("s", $nic);
         $notif_stmt->execute();
     } else {
         $message = '<div style="color: red; text-align: center;">Error submitting application. Please try again.</div>';

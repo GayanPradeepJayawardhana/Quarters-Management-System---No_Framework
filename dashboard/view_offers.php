@@ -2,12 +2,12 @@
 session_start();
 require_once '../db.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['nic'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$nic = $_SESSION['nic'];
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -16,26 +16,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($response == 'accept') {
         if (!empty($offer_id)) {
-            // 'accept' කළ විට database එකේ status එක 'accepted' ලෙස update කිරීම
-            $update_sql = "UPDATE respond_to_offer SET status = 'accepted' WHERE id = ? AND user_id = ?";
+            // Update status to 'accepted' in database
+            $update_sql = "UPDATE respond_to_offer SET status = 'accepted' WHERE id = ? AND nic = ?";
             $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->bind_param("ii", $offer_id, $user_id);
+            $update_stmt->bind_param("is", $offer_id, $nic);
             $update_stmt->execute();
         }
     } elseif ($response == 'later') {
         if (!empty($offer_id)) {
-            $update_sql = "UPDATE respond_to_offer SET created_at = NOW(), status = 'pending' WHERE id = ? AND user_id = ?";
+            $update_sql = "UPDATE respond_to_offer SET created_at = NOW(), status = 'pending' WHERE id = ? AND nic = ?";
             $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->bind_param("ii", $offer_id, $user_id);
+            $update_stmt->bind_param("is", $offer_id, $nic);
             $update_stmt->execute();
         }
         header("Location: index.php");
         exit();
     } elseif ($response == 'deny') {
         if (!empty($offer_id)) {
-            $delete_sql = "DELETE FROM respond_to_offer WHERE id = ? AND user_id = ?";
+            $delete_sql = "DELETE FROM respond_to_offer WHERE id = ? AND nic = ?";
             $delete_stmt = $conn->prepare($delete_sql);
-            $delete_stmt->bind_param("ii", $offer_id, $user_id);
+            $delete_stmt->bind_param("is", $offer_id, $nic);
             $delete_stmt->execute();
         }
         header("Location: index.php");
@@ -43,10 +43,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Database එකෙන් අදාළ user ගේ status එක 'approved' හෝ 'accepted' ද යන්න පරීක්ෂා කිරීම
-$check_sql = "SELECT * FROM respond_to_offer WHERE user_id = ? AND status IN ('approved', 'accepted') ORDER BY created_at DESC LIMIT 1";
+// Check if user has an offer with status 'approved' or 'accepted'
+$check_sql = "SELECT * FROM respond_to_offer WHERE nic = ? AND status IN ('approved', 'accepted') ORDER BY created_at DESC LIMIT 1";
 $check_stmt = $conn->prepare($check_sql);
-$check_stmt->bind_param("i", $user_id);
+$check_stmt->bind_param("s", $nic);
 $check_stmt->execute();
 $check_result = $check_stmt->get_result();
 

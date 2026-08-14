@@ -7,19 +7,20 @@ $username = "root";
 $password = ""; 
 $dbname = "applicants_db";
 
-// MySQL සම්බන්ධතාවය සෑදීම
+// Create MySQL connection
 $conn = new mysqli($host, $username, $password, $dbname);
 
-// සම්බන්ධතාවය පරීක්ෂා කිරීම
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['nic'])) {
     header("Location: ../login.php");
     exit();
 }
 
+$nic = $_SESSION['nic'];
 $search_query = "";
 $application = null;
 $error_message = "";
@@ -29,37 +30,33 @@ $calculated_position = null;
 if (isset($_GET['search'])) {
     $search_query = trim($_GET['computer_no']);
     if (!empty($search_query)) {
-        $sql = "SELECT * FROM applications WHERE computer_no = ?";
+        $sql = "SELECT * FROM applications WHERE computer_no = ? AND nic = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $search_query);
+        $stmt->bind_param("ss", $search_query, $nic);
         $stmt->execute();
         $result = $stmt->get_result();
         
         if ($result->num_rows > 0) {
             $application = $result->fetch_assoc();
             
-            // Get the user_id associated with this application to calculate waiting list position
-            $app_user_id = $application['user_id'] ?? null;
+            // Get waiting list position
+            $pos_sql = "SELECT (SELECT COUNT(*) 
+                         FROM waiting_list a2 
+                         WHERE (a2.applied_date < a1.applied_date) 
+                            OR (a2.applied_date = a1.applied_date AND a2.employee_marks > a1.employee_marks)
+                            OR (a2.applied_date = a1.applied_date AND a2.employee_marks = a1.employee_marks AND a2.id <= a1.id)
+                         ) AS calculated_position
+                 FROM waiting_list a1 
+                 WHERE a1.nic = ?";
             
-            if ($app_user_id) {
-                $pos_sql = "SELECT (SELECT COUNT(*) 
-                             FROM waiting_list a2 
-                             WHERE (a2.applied_date < a1.applied_date) 
-                                OR (a2.applied_date = a1.applied_date AND a2.employee_marks > a1.employee_marks)
-                                OR (a2.applied_date = a1.applied_date AND a2.employee_marks = a1.employee_marks AND a2.id <= a1.id)
-                             ) AS calculated_position
-                     FROM waiting_list a1 
-                     WHERE a1.user_id = ?";
-                
-                $pos_stmt = $conn->prepare($pos_sql);
-                $pos_stmt->bind_param("i", $app_user_id);
-                $pos_stmt->execute();
-                $pos_result = $pos_stmt->get_result();
-                if ($pos_row = $pos_result->fetch_assoc()) {
-                    $calculated_position = $pos_row['calculated_position'];
-                }
-                $pos_stmt->close();
+            $pos_stmt = $conn->prepare($pos_sql);
+            $pos_stmt->bind_param("s", $nic);
+            $pos_stmt->execute();
+            $pos_result = $pos_stmt->get_result();
+            if ($pos_row = $pos_result->fetch_assoc()) {
+                $calculated_position = $pos_row['calculated_position'];
             }
+            $pos_stmt->close();
         } else {
             $error_message = "No application found with Computer No: " . htmlspecialchars($search_query);
         }
@@ -76,7 +73,7 @@ if (isset($_GET['search'])) {
     <title>View Status - Department of Railways</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome අයිකන සඳහා -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -291,7 +288,7 @@ if (isset($_GET['search'])) {
                 <div class="approval-progress-title">Approval Progress</div>
 
                 <?php 
-                // පිළිවෙළට ස්ටෙප්ස් 4 නිර්වචනය කිරීම
+                // Define the 4 steps in order
                 $boss_status  = $application['boss_status'] ?? 'pending';
                 $boss_reason  = $application['boss_reason'] ?? '';
 
@@ -304,20 +301,20 @@ if (isset($_GET['search'])) {
                 $final_status = $application['final_status'] ?? 'pending';
                 $final_reason = $application['final_reason'] ?? '';
 
-                // 1. Immediate Boss reject කර ඇත්නම් අනෙක් සියල්ලටම ❌ යෙදීම
+                // If Immediate Boss rejected, mark all subsequent as rejected
                 if ($boss_status === 'rejected') {
                     if ($file_status === 'pending') { $file_status = 'rejected'; $file_reason = 'Previous step rejected'; }
                     if ($clerk_status === 'pending') { $clerk_status = 'rejected'; $clerk_reason = 'Previous step rejected'; }
                     if ($final_status === 'pending') { $final_status = 'rejected'; $final_reason = 'Previous step rejected'; }
                 }
 
-                // 2. Personal File reject කර ඇත්නම් අනෙක් පසුව එන ඒවාට ❌ යෙදීම
+                // If Personal File rejected, mark subsequent as rejected
                 if ($file_status === 'rejected') {
                     if ($clerk_status === 'pending') { $clerk_status = 'rejected'; $clerk_reason = 'Previous step rejected'; }
                     if ($final_status === 'pending') { $final_status = 'rejected'; $final_reason = 'Previous step rejected'; }
                 }
 
-                // 3. Subject Clerk reject කර ඇත්නම් Final Approval එකට ❌ යෙදීම
+                // If Subject Clerk rejected, mark Final Approval as rejected
                 if ($clerk_status === 'rejected') {
                     if ($final_status === 'pending') { $final_status = 'rejected'; $final_reason = 'Previous step rejected'; }
                 }

@@ -7,27 +7,27 @@ $username = "root";
 $password = ""; 
 $dbname = "applicants_db";
 
-// MySQL සම්බන්ධතාවය සෑදීම
+// Create MySQL connection
 $conn = new mysqli($host, $username, $password, $dbname);
 
-// සම්බන්ධතාවය පරීක්ෂා කිරීම
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['nic'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$nic = $_SESSION['nic'];
 $calculated_position = null;
 $waiting = false;
 
-// applications වගුවෙන් මෙම user_id එකට අදාළ waiting_list_no ලබා ගැනීම
-$sql = "SELECT waiting_list_no FROM applications WHERE user_id = ?";
+// Get waiting list position for this NIC
+$sql = "SELECT waiting_list_no FROM applications WHERE nic = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("s", $nic);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -48,7 +48,7 @@ $stmt->close();
     <title>Waiting List - Department of Railways</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome අයිකන සඳහා -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {

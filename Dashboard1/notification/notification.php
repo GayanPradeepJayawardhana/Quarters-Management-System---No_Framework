@@ -7,30 +7,30 @@ $username = "root";
 $password = ""; 
 $dbname = "applicants_db";
 
-// MySQL සම්බන්ධතාවය සෑදීම
+// Create MySQL connection
 $conn = new mysqli($host, $username, $password, $dbname);
 
-// සම්බන්ධතාවය පරීක්ෂා කිරීම
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['nic'])) {
     header("Location: ../../login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$nic = $_SESSION['nic'];
 
-// AJAX ඉල්ලීම් (Requests) හැසිරවීම (Mark as read සහ Delete)
+// Handle AJAX requests (Mark as read and Delete)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
     header('Content-Type: application/json');
     $target_id = isset($_POST['action_id']) ? (int)$_POST['action_id'] : 0;
 
     if ($_POST['ajax_action'] === 'mark_read' && $target_id > 0) {
-        $update_sql = "UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?";
+        $update_sql = "UPDATE notifications SET is_read = 1 WHERE id = ? AND nic = ?";
         $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("ii", $target_id, $user_id);
+        $update_stmt->bind_param("is", $target_id, $nic);
         if ($update_stmt->execute()) {
             echo json_encode(['status' => 'success', 'message' => '✅ Notification marked as read!']);
         } else {
@@ -40,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         exit();
     } 
     elseif ($_POST['ajax_action'] === 'delete' && $target_id > 0) {
-        $delete_sql = "DELETE FROM notifications WHERE id = ? AND user_id = ?";
+        $delete_sql = "DELETE FROM notifications WHERE id = ? AND nic = ?";
         $delete_stmt = $conn->prepare($delete_sql);
-        $delete_stmt->bind_param("ii", $target_id, $user_id);
+        $delete_stmt->bind_param("is", $target_id, $nic);
         if ($delete_stmt->execute()) {
             echo json_encode(['status' => 'success', 'message' => '🗑️ Notification deleted!']);
         } else {
@@ -53,12 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
     }
 }
 
-// නොටිෆිකේෂන් දත්ත ලබා ගැනීම
+// Get notification data
 $notifications = [];
-$notif_sql = "SELECT * FROM notifications WHERE user_id = ? ORDER BY id DESC";
+$notif_sql = "SELECT * FROM notifications WHERE nic = ? ORDER BY id DESC";
 $notif_stmt = $conn->prepare($notif_sql);
 if ($notif_stmt) {
-    $notif_stmt->bind_param("i", $user_id);
+    $notif_stmt->bind_param("s", $nic);
     $notif_stmt->execute();
     $notif_result = $notif_stmt->get_result();
     while ($row = $notif_result->fetch_assoc()) {
@@ -78,7 +78,7 @@ $total_notifications = count($notifications);
     <title>Notifications - Department of Railways</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome අයිකන සඳහා -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -237,7 +237,6 @@ $total_notifications = count($notifications);
     <header class="bg-[#5c060d] text-white py-4 px-6 md:px-12 shadow-md flex flex-col md:flex-row justify-between items-center relative border-b-4 border-[#b59410]">
         <!-- Logo and Titles -->
         <div class="flex items-center space-x-4">
-            <!-- නිවැරදි path එක සහ slr-logo class එක මෙහි යොදා ඇත -->
             <img src="../../dashboard/images2/logo.png" alt="Notification Logo" class="slr-logo">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold tracking-wider">SRI LANKA RAILWAY</h1>
@@ -309,7 +308,7 @@ $total_notifications = count($notifications);
         </div>
     </div>
 
-    <!-- JavaScript සඳහා Toast සහ AJAX හැසිරවීම -->
+    <!-- JavaScript for Toast and AJAX handling -->
     <script>
         function showToast(message) {
             let toast = document.getElementById('toast-message');

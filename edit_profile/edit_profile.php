@@ -5,12 +5,12 @@ session_start();
 require_once '../db.php';
 
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['nic'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$nic = $_SESSION['nic'];
 $error = "";
 $success = "";
 
@@ -19,9 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_name  = trim($_POST['name']);
     $new_email = trim($_POST['email']);
 
-    $sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+    $sql = "UPDATE users SET name = ?, email = ? WHERE nic = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $new_name, $new_email, $user_id);
+    $stmt->bind_param("sss", $new_name, $new_email, $nic);
 
     if ($stmt->execute()) {
         $_SESSION['user_name'] = $new_name;
@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Get current user data
-$stmt_fetch = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
-$stmt_fetch->bind_param("i", $user_id);
+$stmt_fetch = $conn->prepare("SELECT name, email FROM users WHERE nic = ?");
+$stmt_fetch->bind_param("s", $nic);
 $stmt_fetch->execute();
 $result = $stmt_fetch->get_result();
 $user = $result->fetch_assoc();
@@ -92,7 +92,7 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : $user['nam
             font-family: Arial, sans-serif;
         }
         .header-text h2 {
-            color: #ffeb3b; /* ඔබ පෙන්වූ රූපයේ ඇති bright yellow/gold වර්ණය */
+            color: #ffeb3b;
             font-size: 13px;
             font-weight: 600;
             margin: 2px 0 0 0;

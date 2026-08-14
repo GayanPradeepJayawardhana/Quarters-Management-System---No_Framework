@@ -1,20 +1,20 @@
 <?php
-// Database connection include කිරීම
+// Database connection include
 require_once '../db.php';
 
-// Session එකකින් user name සහ user_id එක ලබාගැනීම
+// Session start and get user details
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'User';
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+$nic = isset($_SESSION['nic']) ? $_SESSION['nic'] : '';
 
-// දත්ත සමුදායෙන් (Database) අදාල පරිශීලකයාගේ නොකියවූ (unread) notification ගණන ලබාගැනීම
+// Get unread notification count from database
 $unread_count = 0;
-if ($user_id > 0 && isset($conn)) {
-    $stmt = $conn->prepare("SELECT COUNT(*) as unread_count FROM notifications WHERE user_id = ? AND is_read = 0");
+if (!empty($nic) && isset($conn)) {
+    $stmt = $conn->prepare("SELECT COUNT(*) as unread_count FROM notifications WHERE nic = ? AND is_read = 0");
     if ($stmt) {
-        $stmt->bind_param("i", $user_id);
+        $stmt->bind_param("s", $nic);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
@@ -32,10 +32,9 @@ if ($user_id > 0 && isset($conn)) {
     <title>Department of Railways - Applicant Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome අයිකන සඳහා -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ලාංඡනය විකෘති වීම වළක්වා නිවැරදි ප්‍රමාණය පාලනය කිරීමට */
         .slr-logo {
             height: 70px !important;
             width: auto !important;

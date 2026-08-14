@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
     
     if (!empty($email) && !empty($password)) {
-        $sql = "SELECT id, name, email, password FROM users WHERE email = ?";
+        $sql = "SELECT nic, name, email, password FROM users WHERE email = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -18,10 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
             
-            // Verifying password for all 4 users (matches password123 via MD5)
+            // Verifying password
             $hashed_input = md5($password);
             if ($user['password'] === $hashed_input || $user['password'] === $password) {
-                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['nic'] = $user['nic'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
                 header("Location: dashboard/index.php");
