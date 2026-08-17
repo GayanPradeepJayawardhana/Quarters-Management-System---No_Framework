@@ -1,0 +1,88 @@
+<?php
+/**
+ * Central Configuration - Change ONLY this file when moving to another computer
+ * ============================================================================
+ * TO RUN ON ANOTHER COMPUTER, CHANGE ONLY THE `BASE_URL` VALUE BELOW!
+ * ============================================================================
+ */
+
+// ==========================================
+// 1. BASE URL - CHANGE THIS ONE VALUE ONLY!
+// ==========================================
+// Examples:
+//   - If your project is at: C:\xampp\htdocs\myproject\public
+//     Set: define('BASE_URL', '/myproject');
+//   
+//   - If your project is at: C:\xampp\htdocs\QMS\applicants_dashboard\public
+//     Set: define('BASE_URL', '/QMS/applicants_dashboard');
+//   
+//   - If your project is at the root: C:\xampp\htdocs\public
+//     Set: define('BASE_URL', '');
+//   
+//   - If using virtual host: http://myapp.test
+//     Set: define('BASE_URL', '');
+
+define('BASE_URL', '/QMS/applicants_dashboard');  // ← CHANGE THIS ONLY!
+
+// ==========================================
+// 2. DATABASE CONFIGURATION
+// ==========================================
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'applicants_db');
+
+// ==========================================
+// 3. APPLICATION SETTINGS
+// ==========================================
+define('APP_NAME', 'Quarter Management System');
+define('APP_VERSION', '1.0.0');
+
+/**
+ * Get the full base URL
+ */
+function baseUrl($path = '') {
+    return BASE_URL . '/public/' . ltrim($path, '/');
+}
+
+/**
+ * Get asset URL
+ */
+function assetUrl($path = '') {
+    return BASE_URL . '/public/assets/' . ltrim($path, '/');
+}
+
+/**
+ * Get database connection
+ * @return mysqli
+ */
+function getDBConnection() {
+    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    
+    if ($conn->connect_error) {
+        die(json_encode([
+            'success' => false,
+            'error' => 'Database Connection Failed: ' . $conn->connect_error
+        ]));
+    }
+    
+    $conn->set_charset("utf8mb4");
+    return $conn;
+}
+
+/**
+ * Redirect to a URL
+ */
+function redirect($path = '') {
+    header('Location: ' . baseUrl($path));
+    exit();
+}
+
+/**
+ * Get current URL
+ */
+function currentUrl() {
+    return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . 
+           $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+}
+?>

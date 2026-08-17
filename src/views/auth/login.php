@@ -2,11 +2,13 @@
 /**
  * Login Page
  */
+require_once __DIR__ . '/../../../config/config.php';
+
 $pageTitle = 'Login - Quarter Management System';
 
 // If already logged in, redirect to dashboard
 if (isset($_SESSION['nic'])) {
-    header('Location: /QMS/applicants_dashboard/public/dashboard');
+    redirect('/dashboard');
     exit();
 }
 
@@ -22,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($nic && $password) {
         if ($auth->login($nic, $password)) {
-            header('Location: /QMS/applicants_dashboard/public/dashboard');
+            redirect('/dashboard');
             exit();
         } else {
             $error = 'Invalid NIC or Password';
@@ -46,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full border-t-4 border-[#b59410]">
         <!-- Logo -->
         <div class="text-center mb-8">
-            <img src="/QMS/applicants_dashboard/public/assets/images/logo.png" alt="Railway Logo" class="h-20 mx-auto mb-4">
+            <img src="<?php echo assetUrl('images/logo.png'); ?>" alt="Railway Logo" class="h-20 mx-auto mb-4">
             <h1 class="text-2xl font-bold text-[#5c060d]">SRI LANKA RAILWAY</h1>
             <p class="text-sm text-gray-500">Quarter Management System</p>
         </div>

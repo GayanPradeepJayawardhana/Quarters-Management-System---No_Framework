@@ -1,4 +1,4 @@
-\<?php
+<?php
 /**
  * Front Controller - Entry point for all routes
  */
@@ -9,8 +9,10 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Define base path for the project
-define('BASE_PATH', '/QMS/applicants_dashboard');
+// ==========================================
+// LOAD CONFIGURATION
+// ==========================================
+require_once __DIR__ . '/../config/config.php';
 
 // ==========================================
 // AUTOLOADING
@@ -31,20 +33,17 @@ function route($path, $method = 'GET') {
     $path = strtok($path, '?');
     
     // Remove base path if running in subdirectory
-    $basePath = '/QMS/applicants_dashboard';
-    if (strpos($path, $basePath) === 0) {
-        $path = substr($path, strlen($basePath));
-    }
-    if (empty($path) || $path === '/') {
-        $path = '/dashboard';
+    if (strpos($path, BASE_URL) === 0) {
+        $path = substr($path, strlen(BASE_URL));
     }
     
     // Remove /public from path if present
     if (strpos($path, '/public') === 0) {
         $path = substr($path, 7);
-        if (empty($path) || $path === '/') {
-            $path = '/dashboard';
-        }
+    }
+    
+    if (empty($path) || $path === '/') {
+        $path = '/dashboard';
     }
     
     // Define routes - map URL paths to view files
@@ -56,6 +55,8 @@ function route($path, $method = 'GET') {
         '/offer/respond' => '/dashboard/view_offers.php',
         '/notifications' => '/notifications/notification.php',
         '/profile/edit' => '/profile/edit_profile.php',
+        '/login' => '/auth/login.php',
+        '/logout' => '/auth/logout.php',
     ];
     
     // Check if path is in routes
@@ -84,25 +85,23 @@ function route($path, $method = 'GET') {
     
     // Handle login/logout separately
     if ($path === '/login') {
-        // Check if user is already logged in
         if (isset($_SESSION['nic'])) {
-            header('Location: ' . BASE_PATH . '/public/dashboard');
+            redirect('/dashboard');
             exit();
         }
-        // Show login page
         require_once __DIR__ . '/../src/views/auth/login.php';
         return;
     }
     
     if ($path === '/logout') {
         session_destroy();
-        header('Location: ' . BASE_PATH . '/public/login');
+        redirect('/login');
         exit();
     }
     
     // If path is / or empty, redirect to dashboard
     if ($path === '/' || $path === '') {
-        header('Location: ' . BASE_PATH . '/public/dashboard');
+        redirect('/dashboard');
         exit();
     }
     
@@ -110,7 +109,7 @@ function route($path, $method = 'GET') {
     http_response_code(404);
     echo '<h1>404 - Page Not Found</h1>';
     echo '<p>The page you are looking for does not exist.</p>';
-    echo '<p><a href="' . BASE_PATH . '/public/dashboard">Go to Dashboard</a></p>';
+    echo '<p><a href="' . baseUrl('/dashboard') . '">Go to Dashboard</a></p>';
 }
 
 // ==========================================
@@ -144,13 +143,11 @@ function handleAjaxRequest($action, $data) {
 // ==========================================
 function checkAuth() {
     $currentPath = $_SERVER['REQUEST_URI'];
-    // Allow access to login page without authentication
     if (strpos($currentPath, '/login') !== false) {
         return true;
     }
-    // Check if user is logged in
     if (!isset($_SESSION['nic'])) {
-        header('Location: ' . BASE_PATH . '/public/login');
+        redirect('/login');
         exit();
     }
     return true;

@@ -2,12 +2,12 @@
 /**
  * Logout Page
  */
-session_start();
+require_once __DIR__ . '/../../../config/config.php';
 
-// Destroy all session data
+session_start();
 session_destroy();
 
 // Redirect to login page
-header('Location: /QMS/applicants_dashboard/public/login');
+redirect('/login');
 exit();
 ?>

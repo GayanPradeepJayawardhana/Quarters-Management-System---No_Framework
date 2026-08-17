@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../../config/config.php';
 
 class AuthController {
     private $userModel;
@@ -15,16 +16,10 @@ class AuthController {
         }
     }
     
-    /**
-     * Check if user is logged in
-     */
     public function isLoggedIn() {
         return isset($_SESSION['nic']);
     }
     
-    /**
-     * Get current user
-     */
     public function getCurrentUser() {
         if ($this->isLoggedIn()) {
             return [
@@ -35,19 +30,13 @@ class AuthController {
         return null;
     }
     
-    /**
-     * Require login
-     */
     public function requireLogin() {
         if (!$this->isLoggedIn()) {
-            header("Location: /QMS/applicants_dashboard/public/login");
+            redirect('/login');
             exit();
         }
     }
     
-    /**
-     * Verify user credentials
-     */
     public function login($nic, $password) {
         $user = $this->userModel->verifyLogin($nic, $password);
         if ($user) {
@@ -58,12 +47,9 @@ class AuthController {
         return false;
     }
     
-    /**
-     * Logout user
-     */
     public function logout() {
         session_destroy();
-        header("Location: /QMS/applicants_dashboard/public/login");
+        redirect('/login');
         exit();
     }
 }
