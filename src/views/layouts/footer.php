@@ -9,6 +9,6 @@
     </footer>
 
     <!-- Custom JavaScript -->
-    <script src="/assets/js/main.js"></script>
+    <script src="/QMS/applicants_dashboard/public/assets/js/main.js"></script>
 </body>
 </html>

@@ -40,7 +40,7 @@ class AuthController {
      */
     public function requireLogin() {
         if (!$this->isLoggedIn()) {
-            header("Location: ../login.php");
+            header("Location: /QMS/applicants_dashboard/public/login");
             exit();
         }
     }
@@ -63,7 +63,7 @@ class AuthController {
      */
     public function logout() {
         session_destroy();
-        header("Location: ../login.php");
+        header("Location: /QMS/applicants_dashboard/public/login");
         exit();
     }
 }
