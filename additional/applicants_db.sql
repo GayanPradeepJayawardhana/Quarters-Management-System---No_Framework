@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 18, 2026 at 05:59 AM
+-- Generation Time: Aug 18, 2026 at 09:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -82,7 +82,16 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   PRIMARY KEY (`id`),
   KEY `idx_nic_time` (`nic`,`attempt_time`),
   KEY `idx_ip_time` (`ip_address`,`attempt_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `login_attempts`
+--
+
+INSERT INTO `login_attempts` (`id`, `nic`, `ip_address`, `success`, `attempt_time`) VALUES
+(1, '200312345678', '::1', 1, '2026-08-18 05:31:10'),
+(2, '200312345678', '::1', 1, '2026-08-18 06:04:40'),
+(3, '200312345678', '::1', 1, '2026-08-18 06:16:18');
 
 -- --------------------------------------------------------
 
@@ -138,6 +147,17 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`nic`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`nic`, `name`, `email`, `password`, `computer_number`, `mobile`, `is_active`, `created_at`, `updated_at`) VALUES
+('198512345678', 'Sunil Jayasuriya', 'sunil@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'EMP004', '0712345681', 1, '2026-08-18 04:06:53', '2026-08-18 04:06:53'),
+('198812345678', 'Kamal Perera', 'kamal@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'EMP002', '0712345679', 1, '2026-08-18 04:06:53', '2026-08-18 04:06:53'),
+('199012345678', 'John Doe', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'EMP001', '0712345678', 1, '2026-08-18 04:06:53', '2026-08-18 04:06:53'),
+('199512345678', 'Nimal Silva', 'nimal@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'EMP003', '0712345680', 1, '2026-08-18 04:06:53', '2026-08-18 04:06:53'),
+('200312345678', 'Gayan Pradeep Jayawardhana', 'gpj@gmail.com', '$2y$12$Grhjkf.c4D/4Y899vMEED.FUAbufV0cOZQn5sp.tbhLnnRR.a2UwS', '200312345678', '0771234567', 1, '2026-08-18 05:30:49', '2026-08-18 05:30:49');
 
 -- --------------------------------------------------------
 
