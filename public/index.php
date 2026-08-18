@@ -3,7 +3,10 @@
  * Front Controller - Entry point for all routes
  */
 
-session_start();
+// Start session ONLY if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Error reporting for development
 error_reporting(E_ALL);
@@ -26,11 +29,83 @@ spl_autoload_register(function ($class) {
 });
 
 // ==========================================
+// AUTHENTICATION CHECK
+// ==========================================
+function checkAuth() {
+    // Get the current path without base URL
+    $currentPath = $_SERVER['REQUEST_URI'];
+    
+    // Remove base URL from path
+    if (strpos($currentPath, BASE_URL) === 0) {
+        $currentPath = substr($currentPath, strlen(BASE_URL));
+    }
+    
+    // Remove /public from path if present
+    if (strpos($currentPath, '/public') === 0) {
+        $currentPath = substr($currentPath, 7);
+    }
+    
+    // Remove query string
+    if (strpos($currentPath, '?') !== false) {
+        $currentPath = strtok($currentPath, '?');
+    }
+    
+    // Clean up the path
+    $currentPath = rtrim($currentPath, '/');
+    if (empty($currentPath)) {
+        $currentPath = '/';
+    }
+    
+    // Define public pages (no login required)
+    $publicPaths = ['/login', '/register', '/logout'];
+    foreach ($publicPaths as $publicPath) {
+        if ($currentPath === $publicPath || strpos($currentPath, $publicPath . '?') === 0) {
+            return true;
+        }
+    }
+    
+    // If accessing public/index.php directly, allow it
+    if (strpos($currentPath, '/public/index.php') !== false) {
+        return true;
+    }
+    
+    // Check if user is logged in
+    if (!isset($_SESSION['nic']) || !isset($_SESSION['session_valid'])) {
+        // Store the intended URL for redirect after login (CLEAN VERSION)
+        $cleanPath = $_SERVER['REQUEST_URI'];
+        // Remove base URL
+        if (strpos($cleanPath, BASE_URL) === 0) {
+            $cleanPath = substr($cleanPath, strlen(BASE_URL));
+        }
+        // Remove /public if present
+        if (strpos($cleanPath, '/public') === 0) {
+            $cleanPath = substr($cleanPath, 7);
+        }
+        // Remove query string if present
+        if (strpos($cleanPath, '?') !== false) {
+            $cleanPath = strtok($cleanPath, '?');
+        }
+        // Ensure it starts with /
+        if (!empty($cleanPath) && $cleanPath[0] !== '/') {
+            $cleanPath = '/' . $cleanPath;
+        }
+        $_SESSION['redirect_after_login'] = $cleanPath;
+        
+        header('Location: ' . baseUrl('login'));
+        exit();
+    }
+    
+    return true;
+}
+
+// ==========================================
 // ROUTE HANDLER
 // ==========================================
 function route($path, $method = 'GET') {
     // Remove query string
-    $path = strtok($path, '?');
+    if (strpos($path, '?') !== false) {
+        $path = strtok($path, '?');
+    }
     
     // Remove base path if running in subdirectory
     if (strpos($path, BASE_URL) === 0) {
@@ -42,7 +117,8 @@ function route($path, $method = 'GET') {
         $path = substr($path, 7);
     }
     
-    if (empty($path) || $path === '/') {
+    // Clean up path
+    if (empty($path) || $path === '/' || $path === '') {
         $path = '/dashboard';
     }
     
@@ -56,8 +132,15 @@ function route($path, $method = 'GET') {
         '/notifications' => '/notifications/notification.php',
         '/profile/edit' => '/profile/edit_profile.php',
         '/login' => '/auth/login.php',
+        '/register' => '/auth/register.php',
         '/logout' => '/auth/logout.php',
     ];
+    
+    // Handle AJAX requests first
+    if ($method === 'POST' && isset($_POST['ajax_action'])) {
+        handleAjaxRequest($_POST['ajax_action'], $_POST);
+        return;
+    }
     
     // Check if path is in routes
     if (isset($routes[$path])) {
@@ -77,30 +160,8 @@ function route($path, $method = 'GET') {
         }
     }
     
-    // Handle AJAX requests
-    if ($method === 'POST' && isset($_POST['ajax_action'])) {
-        handleAjaxRequest($_POST['ajax_action'], $_POST);
-        return;
-    }
-    
-    // Handle login/logout separately
-    if ($path === '/login') {
-        if (isset($_SESSION['nic'])) {
-            redirect('/dashboard');
-            exit();
-        }
-        require_once __DIR__ . '/../src/views/auth/login.php';
-        return;
-    }
-    
-    if ($path === '/logout') {
-        session_destroy();
-        redirect('/login');
-        exit();
-    }
-    
-    // If path is / or empty, redirect to dashboard
-    if ($path === '/' || $path === '') {
+    // Handle root path
+    if ($path === '/') {
         redirect('/dashboard');
         exit();
     }
@@ -139,30 +200,14 @@ function handleAjaxRequest($action, $data) {
 }
 
 // ==========================================
-// Check if user is logged in (except for login page)
-// ==========================================
-function checkAuth() {
-    $currentPath = $_SERVER['REQUEST_URI'];
-    if (strpos($currentPath, '/login') !== false) {
-        return true;
-    }
-    if (!isset($_SESSION['nic'])) {
-        redirect('/login');
-        exit();
-    }
-    return true;
-}
-
-// ==========================================
 // EXECUTE ROUTING
 // ==========================================
 $requestUri = $_SERVER['REQUEST_URI'];
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-// Check authentication for all pages except login
-if (strpos($requestUri, '/login') === false && strpos($requestUri, '/logout') === false) {
-    checkAuth();
-}
+// Check authentication for all pages
+checkAuth();
 
+// Route the request
 route($requestUri, $requestMethod);
 ?>

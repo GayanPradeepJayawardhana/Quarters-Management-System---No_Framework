@@ -38,6 +38,27 @@ define('DB_NAME', 'applicants_db');
 define('APP_NAME', 'Quarter Management System');
 define('APP_VERSION', '1.0.0');
 
+// ==========================================
+// 4. SECURITY SETTINGS
+// ==========================================
+// Password hashing
+define('PASSWORD_COST', 12);
+
+// Session security
+define('SESSION_LIFETIME', 1800); // 30 minutes
+define('MAX_LOGIN_ATTEMPTS', 5);
+define('LOGIN_LOCKOUT_TIME', 900); // 15 minutes
+
+// CSRF protection
+define('CSRF_TOKEN_LIFETIME', 3600); // 1 hour
+
+// Password requirements
+define('MIN_PASSWORD_LENGTH', 8);
+
+// ==========================================
+// 5. FUNCTIONS
+// ==========================================
+
 /**
  * Get the full base URL
  */
