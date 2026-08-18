@@ -67,7 +67,7 @@ include __DIR__ . '/../layouts/header.php';
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="/dashboard" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg transition">
+                    <a href="<?php echo baseUrl('dashboard'); ?>" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg transition">
                         <i class="fa-solid fa-arrow-left mr-2"></i> Back
                     </a>
                     <button type="submit" class="flex-1 bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold py-3 rounded-lg transition shadow-sm hover:shadow-md">

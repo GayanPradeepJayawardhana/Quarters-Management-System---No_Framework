@@ -50,7 +50,7 @@ include __DIR__ . '/../layouts/header.php';
             </form>
             
             <div class="mt-6 text-center">
-                <a href="/dashboard" class="text-[#5c060d] hover:text-amber-600 font-medium text-sm">
+                <a href="<?php echo baseUrl('dashboard'); ?>" class="text-[#5c060d] hover:text-amber-600 font-medium text-sm">
                     <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
                 </a>
             </div>

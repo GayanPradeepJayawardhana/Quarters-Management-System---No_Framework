@@ -27,14 +27,14 @@ include __DIR__ . '/../layouts/header.php';
             <?php else: ?>
                 <div class="py-8 px-4 bg-amber-50 rounded-lg border border-dashed border-amber-300">
                     <p class="text-gray-600">You are not currently on the waiting list.</p>
-                    <a href="/application/request" class="inline-block mt-3 text-[#b59410] hover:underline font-semibold">
+                    <a href="<?php echo baseUrl('application/request'); ?>" class="inline-block mt-3 text-[#b59410] hover:underline font-semibold">
                         Submit an application →
                     </a>
                 </div>
             <?php endif; ?>
 
             <div class="mt-8">
-                <a href="/dashboard" class="inline-block bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold px-6 py-3 rounded-lg transition shadow-sm hover:shadow-md">
+                <a href="<?php echo baseUrl('dashboard'); ?>" class="inline-block bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold px-6 py-3 rounded-lg transition shadow-sm hover:shadow-md">
                     <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </a>
             </div>

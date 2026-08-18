@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result['success']) {
             if ($response === 'later' || $response === 'deny') {
-                header("Location: /dashboard");
+                header("Location: " . baseUrl('dashboard'));
                 exit();
             }
             $message = $result['message'];
@@ -90,7 +90,7 @@ include __DIR__ . '/../layouts/header.php';
             <?php endif; ?>
 
             <div class="mt-6 text-center">
-                <a href="/dashboard" class="text-[#5c060d] hover:text-amber-600 font-medium text-sm">
+                <a href="<?php echo baseUrl('dashboard'); ?>" class="text-[#5c060d] hover:text-amber-600 font-medium text-sm">
                     <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
                 </a>
             </div>

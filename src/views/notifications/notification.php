@@ -87,7 +87,7 @@ include __DIR__ . '/../layouts/header.php';
             </div>
 
             <div class="mt-8 text-center">
-                <a href="/dashboard" class="inline-block bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold px-6 py-3 rounded-lg transition shadow-sm hover:shadow-md">
+                <a href="<?php echo baseUrl('dashboard'); ?>" class="inline-block bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold px-6 py-3 rounded-lg transition shadow-sm hover:shadow-md">
                     <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
                 </a>
             </div>
