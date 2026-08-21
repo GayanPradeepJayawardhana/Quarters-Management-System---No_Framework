@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lanka Railways - Quarters Application Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+        }
+        .dashboard-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .lang-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .sinhala-btn {
+            background-color: #0f4c81;
+            color: white;
+        }
+        .sinhala-btn:hover {
+            background-color: #0b3961;
+        }
+        .english-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .english-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        ශ්‍රී ලංකා දුම්රිය දෙපාර්තමේන්තුව - Sri Lanka Railways
+    </div>
+
+    <div class="dashboard-wrapper">
+        <div class="dashboard-card">
+            <h1 style="color: #0f4c81; font-size: 24px; margin-bottom: 10px;">දුම්රිය නිවාස අයදුම්පත්‍රය</h1>
+            <h2 style="font-size: 18px; color: #555; margin-bottom: 30px;">Railway Quarters Application Form</h2>
+            
+            <p style="margin-bottom: 25px; font-weight: 500;">ඔබගේ භාෂාව තෝරන්න / Please select your language:</p>
+            
+            <a href="sinhala.html" class="lang-btn sinhala-btn">සිංහල </a>
+            <a href="english.html" class="lang-btn english-btn">English</a>
+        </div>
+    </div>
+
+</body>
+</html>

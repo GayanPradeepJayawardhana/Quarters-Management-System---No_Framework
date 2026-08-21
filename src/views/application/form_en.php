@@ -1,0 +1,1186 @@
+<?php
+require_once __DIR__ . '/../../controllers/AuthController.php';
+$auth = new AuthController();
+$auth->requireLogin();
+
+$user = $_SESSION['user_name'] ?? 'User';
+$pageTitle = 'Railway Quarters Application Form - English';
+include __DIR__ . '/../layouts/header.php';
+?>
+
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0 0 30px 0;
+    color: #333;
+}
+
+/* Maroon Header Bar */
+.top-navbar {
+    background-color: #701515;
+    color: #ffffff;
+    padding: 12px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.application-container {
+    max-width: 950px;
+    background: #ffffff;
+    margin: 20px auto;
+    padding: 30px 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+}
+
+/* Header Actions Layout */
+.header-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.back-btn-top {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: bold;
+    border: 1px solid #d39e00;
+    padding: 8px 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: background-color 0.2s;
+}
+
+.back-btn-top:hover {
+    background-color: #e0a800;
+}
+
+/* Office Use Box */
+.office-use-box {
+    border: 1px solid #000;
+    padding: 10px 15px;
+    text-align: center;
+    background-color: #fff;
+    min-width: 260px;
+}
+
+.office-title {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.office-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.form-input-date-sm {
+    padding: 3px 6px;
+    border: 1px solid #000;
+    font-size: 12px;
+}
+
+/* Central Main Title */
+.main-title-container {
+    text-align: center;
+    margin: 25px 0 30px 0;
+    border-bottom: 2px solid #0f4c81;
+    padding-bottom: 15px;
+}
+
+.main-title-container h1 {
+    color: #0f4c81;
+    font-size: 26px;
+    margin: 0 0 8px 0;
+    font-weight: bold;
+}
+
+.main-title-container h2 {
+    color: #333;
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.note-box {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #0f4c81;
+    border-bottom: 1.5px solid #0f4c81;
+    padding-bottom: 4px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+.form-group.full-width {
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dotted-line {
+    display: inline-block;
+    border-bottom: 1px dotted #555;
+    width: 100%;
+    min-height: 20px;
+}
+
+/* Inputs, Textboxes, Dropdowns & Dates */
+.dropdown-select, .form-input-date, .table-input, .form-input {
+    width: 100%;
+    padding: 10px 12px;  /* Textbox එක ඇතුළ ඉඩ වැඩි කිරීම සඳහා */
+    border: 1px solid #b0b0b0;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: #fff;
+    margin-top: 5px;     /* Label එකයි textbox එකයි අතර පරතරය */
+}
+
+.table-input:focus, .dropdown-select:focus, .form-input-date:focus {
+    border-color: #0f4c81;
+    outline: none;
+    box-shadow: 0 0 5px rgba(15, 76, 129, 0.2);
+}
+.inline-select-sm {
+    width: auto;
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 0 4px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    margin-top: 5px;
+}
+
+.radio-label {
+    font-weight: normal;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sub-section {
+    margin-left: 20px;
+    margin-top: 15px;
+}
+
+.indent {
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.inline-select {
+    max-width: 300px;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.custom-table th, .custom-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.custom-table th {
+    background-color: #f1f3f5;
+}
+
+.note-text {
+    font-size: 12px;
+    color: #d9534f;
+    margin-top: 5px;
+}
+
+.nav-btn, .submit-btn {
+    background-color: #0f4c81;
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.nav-btn:hover, .submit-btn:hover {
+    background-color: #0b3961;
+}
+
+/* Dashboard Styles */
+.dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    text-align: center;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+}
+
+.lang-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.sinhala-btn {
+    background-color: #0f4c81;
+    color: white;
+}
+
+.sinhala-btn:hover {
+    background-color: #0b3961;
+}
+
+.english-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.english-btn:hover {
+    background-color: #218838;
+}
+
+/* සාමාන්‍ය තිරයේදී අනුමත කිරීමේ කොටස නොපෙන්වයි */
+#print-approval-section {
+    display: none !important;
+}
+
+/* සාමාන්‍ය තිරයේදී විෂය ලිපිකරුගේ නිර්දේශිත කොටස නොපෙන්වයි */
+.clerk-approval-section {
+    display: none;
+}
+
+/* සාමාන්‍ය තිරයේදී අනුමත කිරීමේ සහ නිර්දේශ කිරීමේ කොටස් සම්පූර්ණයෙන්ම සැඟවේ */
+.office-approval-section {
+    display: none;
+}
+
+
+/* Print Styles for PDF generation */
+@media print {
+    .top-navbar, .back-btn-top, .nav-btn, .print-btn, button {
+        display: none !important;
+    }
+    body {
+        background-color: #fff;
+        padding: 0;
+    }
+    .application-container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+    }
+    .page-section {
+        display: block !important;
+        page-break-after: always;
+    }
+    #print-approval-section {
+        display: block !important;
+    }
+    .button-container {
+        display: none !important;
+    }
+    .clerk-approval-section {
+        display: block !important;
+    }
+    body {
+        background-color: white !important;
+    }
+    
+    .office-approval-section {
+        display: block !important;
+    page-break-inside: avoid;
+    }
+
+    /* මුද්‍රණය කරන විට බොත්තම් සැඟවීම */
+    button {
+        display: none !important;
+    }
+
+    fieldset {
+        border-color: #333 !important;
+    }
+    
+}
+
+</style>
+
+
+    <div class="application-container">
+        
+        <div class="header-action-row">
+            <div>
+                <a href="<?php echo baseUrl('application/select-language'); ?>" class="back-btn-top">&laquo; Dashboard</a>
+            </div>
+            <div class="office-use-box">
+                <div class="office-title">*** For Office Use Only ***</div>
+                <div class="office-field">
+                    <label>Date Received:</label>
+                    <input type="date" class="form-input-date-sm">
+                </div>
+            </div>
+        </div>
+
+        <div class="main-title-container">
+            <h1>Sri Lanka Railways</h1>
+            <h2>Application for Railway Quarters - Transportation Sub-Department</h2>
+        </div>
+
+        <form id="railway-form-en" action="<?php echo baseUrl('application/submit'); ?>" method="POST">
+            
+            <div id="page-1" class="page-section">
+
+                <div class="note-box">
+                    <p><strong>Note:</strong> Every section of this form must be completed accurately and clearly. Incomplete applications will be rejected.</p>
+                </div>
+
+                <div class="form-row top-row">
+                    <div class="form-group">
+                        <label>Quarters Number Applied For:</label>
+                        <input type="text" name="quarter_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>Location:</label>
+                        <input type="text" name="location" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="house-type">Type of Quarters Applied For:</label>
+                        <select id="house-type" name="house_type" class="dropdown-select">
+                            <option value="" disabled selected>-- Select Type --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-title">1. Applicant's Details :</div>
+                
+                <div class="form-group">
+                    <label>I. Full Name of the Applicant:</label>
+                    <input type="text" name="applicant_name" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+                
+                <div class="form-group">
+                    <label>II. Name with Initials:</label>
+                    <input type="text" name="applicant_name_with_initials" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+
+                <div class="form-group">
+                    <label>III. Present Work Station:</label>
+                    <input type="text" name="present_work_station" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>IV. Service No:</label>
+                         <input type="text" name="spouse_service_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>V. Computer No:</label>
+                        <input type="text" name="computer_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>Salary Sheet No:</label>
+                        <input type="text" name="salary_sheet_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dob">VI. Date of Birth:</label>
+                        <input type="date" id="dob" name="dob" class="form-input-date">
+                    </div>
+                    <div class="form-group">
+                        <label>VIII. Telephone No:</label>
+                        <input type="text" name="telephone_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>VII. Private Address:</label>
+                    <input type="text" name="private_address" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>IX. Designation:</label>
+                        <select id="designation" name="designation" class="dropdown-select">
+                            <option value="" disabled selected>-- Select Designation --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>XI. National Identity Card (NIC) No:</label>
+                         <input type="text" name="spouse_national_id" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>X. Official Address:</label>
+                    <input type="text" name="official_address" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>XII. Civil Status:</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="civil_status" value="Married" onclick="handleCivilStatus('Married')"> Married</label>
+                        <label class="radio-label"><input type="radio" name="civil_status" value="Unmarried" onclick="handleCivilStatus('Unmarried')"> Unmarried</label>
+                        <label class="radio-label"><input type="radio" name="civil_status" value="Divorced" onclick="handleCivilStatus('Divorced')"> Divorced</label>
+                        <label class="radio-label"><input type="radio" name="civil_status" value="Widowed" onclick="handleCivilStatus('Widowed')"> Widowed</label>
+                    </div>
+                </div>
+
+                <div class="sub-section">
+                    <label>XIII. Your Sub-Department Details:</label>
+                    <div class="form-group indent">
+                        <label>i. Sub-Department:</label>
+                        <select name="sub_department" class="dropdown-select inline-select">
+                            <option value="" disabled selected>-- Select Sub-Department --</option>
+                        </select>
+                    </div>
+                    <div class="form-group indent">
+                        <label>ii. Accounts Branch preparing salary:</label>
+                        <input type="text" name="accounts_branch" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                    <div class="form-group indent">
+                        <label>iii. Office maintaining personal files:</label>
+                        <input type="text" name="personal_files_office" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="section-title">2. Details Regarding Your Service</div>
+                
+                <div class="form-group full-width">
+                    <label>Is your service confirmed?</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="is_permanent" value="yes" onclick="toggleContainer('permanent-date-group', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="is_permanent" value="no" onclick="toggleContainer('permanent-date-group', false)" > No</label>
+                    </div>
+                </div>
+
+                <div id="permanent-date-group" class="form-row" style="display: none;">
+                    <div class="form-group">
+                        <label for="confirmed-date">Date of confirmation in service:</label>
+                        <input type="date" id="confirmed-date" name="confirmed_date" class="form-input-date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gov-date">I. Date of first appointment to Government Service:</label>
+                    <input type="date" id="gov-date" name="gov_date" class="form-input-date">
+                </div>
+                <div class="form-group">
+                    <label for="railway-date">II. Date of first appointment to Railway Service:</label>
+                    <input type="date" id="railway-date" name="railway_date" class="form-input-date">
+                </div>
+                <div class="form-group">
+                    <label for="subdept-date">III. Date of assuming duties in the Sub-Department:</label>
+                    <input type="date" id="subdept-date" name="subdept_date" class="form-input-date">
+                </div>
+                <div class="form-group">
+                    <label for="current-post-date">IV. Date of appointment to the present post:</label>
+                    <input type="date" id="current-post-date" name="current_post_date" class="form-input-date">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>V. Have you served in other sub-departments of the Railway Department?</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="other_subdept" value="yes" onclick="toggleTable('table-v', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="other_subdept" value="no" onclick="toggleTable('table-v', false)" > No</label>
+                    </div>
+                </div>
+
+                <div id="table-v" class="conditional-table" style="display: none;">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Sub-Department</th>
+                                <th>From</th>
+                                <th>To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><select class="dropdown-select table-select"><option value="" disabled selected>-- Select --</option></select></td>
+                                <td><input type="date" class="form-input-date"></td>
+                                <td><input type="date" class="form-input-date"></td>
+                            </tr>
+                            <tr>
+                                <td><select class="dropdown-select table-select"><option value="" disabled selected>-- Select --</option></select></td>
+                                <td><input type="date" class="form-input-date"></td>
+                                <td><input type="date" class="form-input-date"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>VI. If there are any breaks in service, state below:</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="service_breaks" value="yes" onclick="toggleTable('table-vi', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="service_breaks" value="no" onclick="toggleTable('table-vi', false)"> No</label>
+                    </div>
+                </div>
+
+                <div id="table-vi" class="conditional-table" style="display: none;">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Sub-Department</th>
+                                <th>From</th>
+                                <th>To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><select class="dropdown-select table-select"><option value="" disabled selected>-- Select --</option></select></td>
+                                <td><input type="date" class="form-input-date"></td>
+                                <td><input type="date" class="form-input-date"></td>
+                            </tr>
+                            <tr>
+                                <td><select class="dropdown-select table-select"><option value="" disabled selected>-- Select --</option></select></td>
+                                <td><input type="date" class="form-input-date"></td>
+                                <td><input type="date" class="form-input-date"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="button-container" style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="nav-btn" onclick="changePage('page-1', 'page-2')">Next &raquo;</button>
+                </div>
+            </div>
+
+            <div id="page-2" class="page-section" style="display: none;">
+                
+                <div id="married-sections" style="display: none;">
+                    <div class="section-title">3. Details of Children</div>
+                    
+                    <div class="form-group full-width">
+                        <label>I. If you have children, whether they will reside with you:</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="has_children" value="yes" onclick="toggleContainer('children-details', true)"> Yes</label>
+                            <label class="radio-label"><input type="radio" name="has_children" value="no" onclick="toggleContainer('children-details', false)" > No</label>
+                        </div>
+                    </div>
+
+                    <div id="children-details" style="display: none;">
+                        <div class="form-group">
+                            <label>II. Details of children:</label>
+                            <table class="custom-table" style="margin-top: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Gender</th>
+                                        <th>Date of Birth</th>
+                                        <th>Civil Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="text" class="table-input"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Male">Male</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="date" class="form-input-date"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Unmarried">Unmarried</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Divorced">Divorced</option>
+                                                <option value="Widowed">Widowed</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="table-input"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Male">Male</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="date" class="form-input-date"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Unmarried">Unmarried</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Divorced">Divorced</option>
+                                                <option value="Widowed">Widowed</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="table-input"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Male">Male</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="date" class="form-input-date"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Unmarried">Unmarried</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Divorced">Divorced</option>
+                                                <option value="Widowed">Widowed</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="table-input"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Male">Male</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="date" class="form-input-date"></td>
+                                        <td>
+                                            <select class="dropdown-select table-select">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                <option value="Unmarried">Unmarried</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Divorced">Divorced</option>
+                                                <option value="Widowed">Widowed</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="note-text">(If a child employed in the government service is intended to be accommodated, special permission must be obtained.)</p>
+                        </div>
+                    </div>
+
+                    <div class="section-title">4. Details of Spouse (Wife / Husband) :</div>
+                    
+                    <div class="form-group full-width">
+                        <label>If spouse is alive, whether residing with you:</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="has_spouse" value="yes" onclick="toggleContainer('spouse-details', true)"> Yes</label>
+                            <label class="radio-label"><input type="radio" name="has_spouse" value="no" onclick="toggleContainer('spouse-details', false)"> No</label>
+                        </div>
+                    </div>
+
+                    <div id="spouse-details" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>I. Full Name:</label>
+                                <input type="text" name="spouse_name" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                            </div>
+                            <div class="form-group">
+                                <label>II. NIC No:</label>
+                                <input type="text" name="spouse_national_id" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>III. Occupation:</label>
+                            <input type="text" name="spouse_occupation" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>IV. Whether spouse will come to reside if quarters are allotted:</label>
+                            <div class="radio-group" style="margin-top: 5px;">
+                                <label class="radio-label"><input type="radio" name="spouse_moving" value="Will Come"> Yes</label>
+                                <label class="radio-label"><input type="radio" name="spouse_moving" value="Will Not Come"> No</label>
+                            </div>
+                        </div>
+
+                        <div class="section-title">5. If Spouse is in Government Service :</div>
+                        
+                        <div class="form-group full-width">
+                            <label>Is spouse employed in Government Service?</label>
+                            <div class="radio-group">
+                                <label class="radio-label"><input type="radio" name="spouse_gov_job" value="yes" onclick="toggleContainer('gov-spouse-details', true)"> Yes</label>
+                                <label class="radio-label"><input type="radio" name="spouse_gov_job" value="no" onclick="toggleContainer('gov-spouse-details', false)"> No</label>
+                            </div>
+                        </div>
+
+                        <div id="gov-spouse-details" style="display: none;">
+                            <div class="form-row" style="margin-top: 10px;">
+                                <div class="form-group">
+                                    <label>I. Department:</label>
+                                    <input type="text" name="spouse_department" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Service No:</label>
+                                    <input type="text" name="spouse_service_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>II. Designation:</label>
+                                <input type="text" name="spouse_position" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>III. Head of Institution and Address:</label>
+                                <input type="text" name="spouse_head_institution" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>IV. Present Work Station and Address:</label>
+                                <input type="text" name="spouse_work_station" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>V. Present Annual Salary:</label>
+                                <input type="text" name="spouse_annual_salary" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">6. Permanent Residence :</div>
+                
+                <div class="form-group">
+                    <label>I. Address of Permanent Residence:</label>
+                    <input type="text" name="permanent_address" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>II. Are you the owner of it?</label>
+                        <div class="radio-group" style="margin-top: 5px;">
+                            <label class="radio-label"><input type="radio" name="owner_is_self" value="yes"> Yes</label>
+                            <label class="radio-label"><input type="radio" name="owner_is_self" value="no"> No</label>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <label style="display: block; margin-bottom: 5px;">If not, relationship to the owner:</label>
+                            <input type="text" name="owner_relationship" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>III. Do you commute to work from there?</label>
+                        <div class="radio-group" style="margin-top: 5px;">
+                            <label class="radio-label"><input type="radio" name="commute_from_home" value="yes"> Yes</label>
+                            <label class="radio-label"><input type="radio" name="commute_from_home" value="no"> No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="permanent-district">IV. Permanent District:</label>
+                        <select id="permanent-district" name="permanent_district" class="dropdown-select">
+                            <option value="" disabled selected>-- Select District --</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>V. Nearest major city and distance from it:</label>
+                        <input type="number" id="nearest-city-distance" name="nearest_city_distance" class="table-input" min="0" step="1" placeholder="(km)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>VI. Distance from branch post/station to workplace:</label>
+                    <input type="number" id="branch-to-work-distance" name="branch_to_work_distance" class="table-input" min="0" step="1" style="max-width: 200px; margin-left: 10px;" placeholder="(km)">
+                </div>
+
+                <div class="section-title">7. If Currently Residing in a Rented House :</div>
+                
+                <div class="form-group full-width">
+                    <label>Are you currently residing in a rented house?</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="is_rented_house" value="yes" onclick="toggleContainer('rented-house-details', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="is_rented_house" value="no" onclick="toggleContainer('rented-house-details', false)"> No</label>
+                    </div>
+                </div>
+
+                <div id="rented-house-details" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>I. Owner's Name:</label>
+                            <input type="text" name="owner_name" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>II. Location:</label>
+                            <input type="text" name="spouse_location" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>III. Address:</label>
+                        <input type="text" name="owner_address" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="rent-date">IV. Date of occupancy:</label>
+                            <input type="date" id="rent-date" name="rent_date" class="form-input-date">
+                        </div>
+                        <div class="form-group">
+                            <label>V. Monthly rent paid:</label>
+                            <input type="text" name="monthly_rent" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-container space-between" style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button type="button" class="nav-btn" onclick="changePage('page-2', 'page-1')">&laquo; Back</button>
+                    <button type="button" class="nav-btn" onclick="changePage('page-2', 'page-3')">Next &raquo;</button>
+                </div>
+            </div>
+
+            <div id="page-3" class="page-section" style="display: none;">
+                
+                <div class="section-title">8. If you suffer from walking difficulties, disability or illness, please state below.</div>
+                
+                <div class="form-group full-width">
+                    <div class="radio-group" style="margin-bottom: 10px;">
+                        <label class="radio-label"><input type="radio" name="has_disability" value="yes" onclick="toggleContainer('disability-details', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="has_disability" value="no" onclick="toggleContainer('disability-details', false)"> No</label>
+                    </div>
+                </div>
+
+                <div id="disability-details" style="display: none;">
+                    <div class="form-group">
+                        <label>Details of illness and its nature:</label>
+                        <input type="text" name="disability_details" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="medical-cert">Upload Government Medical Certificate:</label>
+                        <input type="file" id="medical-cert" name="medical_cert" class="form-input" accept=".pdf, .jpg, .jpeg, .png">
+                    </div>
+                    <p class="note-text">(The disease and its nature must be certified by a Government Medical Certificate)</p>
+                </div>
+
+                <div class="section-title">9. If you have previously resided in a Railway Quarters :</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>I. Quarters Number:</label>
+                        <input type="text" name="quarters_number" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="moved-out-date">Date Vacated:</label>
+                        <input type="date" id="moved-out-date" name="moved_out_date" class="form-input-date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Reason for vacating:</label>
+                    <input type="text" name="vacating_reason" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>II. Have you previously rejected a railway quarters allocated to you?</label>
+                    <div class="radio-group" style="margin-top: 5px; margin-bottom: 10px;">
+                        <label class="radio-label"><input type="radio" name="rejected_quarters" value="yes" onclick="toggleContainer('rejected-details', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="rejected_quarters" value="no" onclick="toggleContainer('rejected-details', false)"> No</label>
+                    </div>
+                </div>
+
+                <div id="rejected-details" style="display: none;">
+                    <div class="form-group">
+                        <label>If so, details thereof:</label>
+                        <input type="text" name="rejected_details" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>III. Have you previously submitted an application to obtain railway quarters?</label>
+                    <div class="radio-group" style="margin-top: 5px;">
+                        <label class="radio-label"><input type="radio" name="applied_before" value="yes" onclick="toggleContainer('applied-before-details', true)"> Yes</label>
+                        <label class="radio-label"><input type="radio" name="applied_before" value="no" onclick="toggleContainer('applied-before-details', false)"> No</label>
+                    </div>
+                </div>
+
+                <div id="applied-before-details" style="display: none;">
+                    <div class="form-row" style="margin-top: 10px;">
+                        <div class="form-group">
+                            <label for="applied-date">Date Applied:</label>
+                            <input type="date" id="applied-date" name="applied_date" class="form-input-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Type of Quarters:</label>
+                            <input type="text" name="quarters_type" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Location:</label>
+                        <input type="text" name="quarters_location" class="table-input" style="padding: 10px; font-size: 14px; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="section-title">10. Declaration :</div>
+                <div class="form-group full-width declaration-text" style="font-size: 14px; line-height: 1.8;">
+                    <p>If railway quarters are allocated to me,</p>
+                    <p>I. I will reside with my family members,</p>
+                    <p>II. I will not accommodate maintenance workers or outsiders without notice,</p>
+                    <p>III. If facts mentioned in this application (change of Grade, birth of children, marriages, deaths, divorces, spouse employment) change hereafter, I will report them,</p>
+                    <p>IV. Subject to the condition of vacating and handing over these quarters along with my dependents upon notice by the department or when required, I accept them.</p>
+                    
+                    <div style="margin-top: 15px; display: inline-block;">
+                        I hereby declare that the information provided above is true and correct, and I am aware that making a false statement may render me liable to punishment or disciplinary action. I also certify that I am not currently the main occupant of another railway quarters. A copy of the salary sheet for the month of 
+                        
+                        <select name="declaration_month" class="dropdown-select inline-select-sm" required>
+                            <option value="" disabled selected>-- Month --</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select> 
+                        in the year 
+                        
+                        <select name="declaration_year" class="dropdown-select inline-select-sm" required>
+                            <option value="" disabled selected>-- Year --</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                        </select> 
+                        is attached herewith.
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label for="page3-date">Date:</label>
+                        <input type="date" id="page3-date" name="page3_date" class="form-input-date">
+                    </div>
+                </div>
+
+                <!-- 1. Deputy Superintendent (Transportation) Colombo Approval Section -->
+                <div id="print-approval-section" style="margin-top: 40px; border-top: 2px dashed #333; padding-top: 20px;">
+    <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
+        <legend style="font-weight: bold; color: #0f4c81; padding: 0 10px;">
+            Deputy Superintendent (Transportation) Colombo
+        </legend>
+                        <p class="text-sm font-medium text-gray-700 mt-2 mb-3">To the best of my knowledge,</p>
+                        <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-5 pl-2">
+                            <li>The above-mentioned information is correct / corrected as appropriate,</li>
+                            <li>The applicant / spouse or children do / do not possess residential property within 15 miles,</li>
+                            <li>I hereby recommend / do not recommend this housing application of the applicant.</li>
+                        </ul>
+
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px;">අයදුම් කරන නිවාස වර්ගය හා අංකය:</label>
+            <input type="text" style="width: 100%; padding: 8px; border: 1px solid #ccc;" readonly>
+        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Essentiality to service and other remarks if any (e.g., Night Shift duties):</label>
+            <textarea rows="2" style="width: 100%; padding: 8px; border: 1px solid #ccc;" readonly></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <div>
+                <label for="applied-date">Date of Application:</label>
+                <input type="date" id="applied-date" name="applied_date" class="form-input-date">
+            </div>
+        </div>
+                    </fieldset>
+                </div>
+            
+               <!-- 2. Subject Clerk's Recommendation Based on Personal File -->
+                <div class="clerk-approval-section">
+                <div id="print-approval-section" style="margin-top: 40px; border-top: 2px dashed #333; padding-top: 20px;">
+                     <fieldset style="border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
+                     <legend style="font-weight: bold; color: #0f4c81; padding: 0 10px;">
+                              Subject Clerk's Recommendation Based on Personal File
+                      </legend>
+
+
+                        <p class="text-sm font-bold text-gray-800 mt-2 mb-4">Recommendation regarding the eligibility of the above-mentioned housing applicant to obtain a Government / Railway Quarters:</p>
+                        
+                        <!-- Question I -->
+                        <div class="mb-3 text-sm">
+                            <p class="font-semibold text-gray-700 mb-1">I. Has the right to Government / Railway quarters been forfeited due to a disciplinary order?</p>
+                            <div class="flex gap-6 pl-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="clerk_rec_forfeit" value="Yes" class="text-[#0f4c81]"> Yes</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="clerk_rec_forfeit" value="No" class="text-[#0f4c81]"> No</label>
+                            </div>
+                        </div>
+
+                        <!-- Question II -->
+                        <div class="mb-3 text-sm">
+                            <label class="block font-semibold text-gray-700 mb-1">II. If yes, the date on which the disciplinary order expires:</label>
+                            <input type="date" name="house_vacated_date" class="w-full sm:w-1/3 px-3 py-1.5 border border-gray-300 rounded text-sm bg-gray-50">
+                        </div>
+
+                        <!-- Question III -->
+                        <div class="mb-3 text-sm">
+                            <p class="font-semibold text-gray-700 mb-1">III. Is he/she a recipient of a Mihindusethpura housing scheme?</p>
+                            <div class="flex gap-6 pl-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="clerk_rec_waitlist" value="Yes" class="text-[#0f4c81]"> Yes</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="clerk_rec_waitlist" value="No" class="text-[#0f4c81]"> No</label>
+                            </div>
+                        </div>
+
+                        <!-- Question IV -->
+                        <div class="mb-3 text-sm">
+                            <p class="font-semibold text-gray-700 mb-1">IV. Residing / Not residing in another Government / Railway quarters according to the personal file?</p>
+                            <div class="flex gap-6 pl-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="is_another_residence_permanent" value="Yes" class="text-[#0f4c81]"> Yes</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="is_not_another_residence_permanent" value="No" class="text-[#0f4c81]"> No</label>
+                            </div>
+                        </div>
+
+                        <!-- Question V -->
+                         <div class="mb-6" style="margin-bottom: 24px;">
+            <label class="block text-sm font-semibold text-gray-700 mb-2" style="line-height: 1.5;">V. වෙනත් කරුණු:</label>
+            <textarea name="clerk_rec_other_notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c81] text-sm" style="margin-top: 8px; width: 100%;"></textarea>
+        </div>
+
+
+                        <!-- Cabinet Number -->
+                        <div class="text-sm">
+                            <label class="block font-semibold text-gray-700 mb-1">Cabinet Number:</label>
+                            <input type="text" name="clerk_reg_no" class="w-full sm:w-1/3 px-3 py-1.5 border border-gray-300 rounded text-sm bg-gray-50">
+                        </div>
+            <div>
+                <button type="button" class="bg-[#0f4c81] hover:bg-[#0b3961] text-white font-medium text-sm px-6 py-2.5 rounded-md shadow transition duration-150">
+                    Approved
+                </button>
+            </div>
+        </div>
+    </fieldset>
+                </div>
+
+                <div class="button-container space-between" style="margin-top: 25px; display: flex; justify-content: space-between;">
+                    <button type="button" class="nav-btn" onclick="changePage('page-3', 'page-2')">&laquo; Back</button>
+                    <div>
+                        <button type="button" class="nav-btn print-btn" onclick="window.print()" style="background-color: #28a745; color: white; margin-right: 10px;">Print to PDF</button>
+                        <button type="submit" class="submit-btn" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer;">Submit Application</button>
+                    </div>
+                </div>
+
+        </form>
+
+
+    <script>
+        let currentPage = 1;
+
+        function changePage(currentId, targetId) {
+            document.getElementById(currentId).style.display = 'none';
+            document.getElementById(targetId).style.display = 'block';
+            
+            if(targetId === 'page-1') currentPage = 1;
+            else if(targetId === 'page-2') currentPage = 2;
+            else if(targetId === 'page-3') currentPage = 3;
+
+            window.scrollTo(0, 0);
+        }
+
+        function handleTopBack() {
+            if (currentPage === 2) {
+                changePage('page-2', 'page-1');
+            } else if (currentPage === 3) {
+                changePage('page-3', 'page-2');
+            } else {
+                alert('You are already on the first page.');
+            }
+        }
+
+        function toggleTable(tableId, show) {
+            const tableDiv = document.getElementById(tableId);
+            tableDiv.style.display = show ? "block" : "none";
+        }
+
+        function toggleContainer(containerId, show) {
+            const container = document.getElementById(containerId);
+            container.style.display = show ? "block" : "none";
+        }
+
+        function handleCivilStatus(status) {
+            const marriedSections = document.getElementById('married-sections');
+            if (status === 'Married' || status === 'Unmarried' || status === 'Divorced' || status === 'Widowed') {
+                marriedSections.style.display = 'block';
+            } else {
+                marriedSections.style.display = 'none';
+            }
+        }
+
+        document.getElementById('railway-form-en').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Application submitted successfully!');
+        });
+    </script>
+<?php include __DIR__ . '/../layouts/footer.php'; ?>

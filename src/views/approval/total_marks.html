@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lanka Railways - Official Marking Scheme</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styling for the marking scheme table to align with railway theme */
+        .marking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .marking-table th, .marking-table td {
+            border: 1px solid #d1d5db;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+        .marking-table th {
+            background-color: #0f4c81; /* Railway Blue */
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .marking-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-12 font-sans text-gray-800">
+
+    <!-- Top Maroon Navigation Bar -->
+    <div class="w-full bg-[#701515] text-white py-3 px-6 text-lg font-bold shadow-md flex justify-between items-center">
+        <span>Sri Lanka Railways - Transportation Sub Department</span>
+    </div>
+
+    <!-- Main Container Card -->
+    <div class="max-w-4xl mx-auto bg-white mt-6 p-8 shadow-md rounded-lg border border-gray-200">
+        
+        <!-- Header Actions: Back Button -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <!-- Railway Yellow Back Button -->
+                <a href="index.html" class="inline-block bg-amber-400 hover:bg-amber-500 text-black font-bold py-2 px-4 rounded shadow transition duration-150 text-sm">
+                    &laquo; Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="text-center border-b-2 border-[#0f4c81] pb-4 mb-6">
+            <h1 class="text-2xl font-bold text-[#0f4c81] mb-1">Sri Lanka Railways</h1>
+            <h2 class="text-lg font-semibold text-gray-700">Railway Quarters Allotment - Evaluation & Marking Scheme</h2>
+        </div>
+
+        <!-- Marking Scheme Form Section -->
+        <form>
+            <fieldset class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm mb-6">
+                <!-- Legend Title -->
+                <legend class="text-sm font-bold text-[#701515] px-3 py-1 bg-amber-100 border border-amber-300 rounded-md">
+                    For Office Use Only : Marking Scheme
+                </legend>
+
+                <!-- Marking Table -->
+                <div class="overflow-x-auto">
+                    <table class="marking-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80%;">Description / Criteria</th>
+                                <th style="width: 20%; text-align: center;">Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. Duration in the waiting list (1 mark per month)</td>
+                                <td style="text-align: center;"><input type="text" name="score_1" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>2. Number of children (1 mark each for male children under 18 years and unmarried female children)</td>
+                                <td style="text-align: center;"><input type="text" name="score_2" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>3. For residing in a rented house or an unlivable house</td>
+                                <td style="text-align: center;"><input type="text" name="score_3" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>4. For essential service (Maximum 03 marks)</td>
+                                <td style="text-align: center;"><input type="text" name="score_4" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>5. Permanency of service (12 marks deducted if temporary)</td>
+                                <td style="text-align: center;"><input type="text" name="score_5" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>6. Distance to workplace (1 mark per kilometer starting from 15 km)</td>
+                                <td style="text-align: center;"><input type="text" name="score_6" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>7. Serious illnesses of the applicant (02 marks)</td>
+                                <td style="text-align: center;"><input type="text" name="score_7" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>8. Serious illnesses of dependents (01 mark)</td>
+                                <td style="text-align: center;"><input type="text" name="score_8" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>9. Service duration in Transportation Sub-Department</td>
+                                <td style="text-align: center;"><input type="text" name="score_9" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>10. Marital status (01 mark)</td>
+                                <td style="text-align: center;"><input type="text" name="score_10" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr>
+                                <td>11. Total service duration (1 mark per year. If multiple officers have the same score, seniority is considered.)</td>
+                                <td style="text-align: center;"><input type="text" name="score_11" class="border border-gray-300 p-1 text-center rounded focus:ring-2 focus:ring-[#0f4c81] focus:outline-none" style="width: 80px;"></td>
+                            </tr>
+                            <tr style="background-color: #fef3c7; font-weight: bold;">
+                                <td style="text-align: right;" class="text-[#701515]">Total Marks :</td>
+                                <td style="text-align: center;"><input type="text" name="total_score" class="border border-gray-400 bg-white p-1 text-center rounded font-bold text-[#701515]" style="width: 80px;" readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Evaluator Signature Area -->
+                <div class="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-6 mt-8 pt-4 border-t border-gray-200">
+                    <button type="submit" class="bg-[#0f4c81] hover:bg-[#0b3961] text-white font-medium text-sm px-6 py-2.5 rounded-md shadow transition duration-150">
+                       Submit Total Marks
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+</body>
+</html>

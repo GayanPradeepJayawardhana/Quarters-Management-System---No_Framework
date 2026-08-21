@@ -33,7 +33,7 @@ include __DIR__ . '/../layouts/header.php';
                 </div>
                 <h3 class="text-xl font-bold mb-1 text-gray-900">Request Quarters</h3>
                 <p class="text-gray-500 text-sm mb-6">Start a new application for a government quarter.</p>
-                <a href="<?php echo baseUrl('application/request'); ?>" class="mt-auto bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold px-5 py-2 rounded-lg text-sm transition shadow-sm inline-flex items-center space-x-1">
+                <a href="<?php echo baseUrl('application/select-language'); ?>" class="mt-auto bg-[#5c060d] hover:bg-[#4a050a] text-white hover:text-amber-300 font-semibold px-5 py-2 rounded-lg text-sm transition shadow-sm inline-flex items-center space-x-1">
                     <span>New Application</span>
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </a>

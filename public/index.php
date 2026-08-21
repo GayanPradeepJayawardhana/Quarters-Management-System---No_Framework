@@ -123,17 +123,29 @@ function route($path, $method = 'GET') {
     }
     
     // Define routes - map URL paths to view files
+    // Define routes - map URL paths to view files
     $routes = [
-        '/dashboard' => '/dashboard/index.php',
-        '/application/request' => '/dashboard/request_quarters.php',
-        '/application/status' => '/dashboard/view_status.php',
-        '/waiting-list' => '/dashboard/waiting_list.php',
-        '/offer/respond' => '/dashboard/view_offers.php',
-        '/notifications' => '/notifications/notification.php',
-        '/profile/edit' => '/profile/edit_profile.php',
-        '/login' => '/auth/login.php',
-        '/register' => '/auth/register.php',
-        '/logout' => '/auth/logout.php',
+        // Existing routes
+        '/dashboard'                 => '/dashboard/index.php',
+        '/application/request'       => '/dashboard/request_quarters.php',
+        '/application/status'        => '/dashboard/view_status.php',
+        '/waiting-list'              => '/dashboard/waiting_list.php',
+        '/offer/respond'             => '/dashboard/view_offers.php',
+        '/notifications'             => '/notifications/notification.php',
+        '/profile/edit'              => '/profile/edit_profile.php',
+        '/login'                     => '/auth/login.php',
+        '/register'                  => '/auth/register.php',
+        '/logout'                    => '/auth/logout.php',
+
+        // New routes for the application forms and approvals
+        '/application/select-language' => '/application/language_selector.php',
+        '/application/form/si'         => '/application/form_si.php',
+        '/application/form/en'         => '/application/form_en.php',
+        '/approval/deputy/en'          => '/approval/deputy_supt_en.php',
+        '/approval/deputy/si'          => '/approval/deputy_supt_si.php',
+        '/approval/clerk/en'           => '/approval/clerk_en.php',
+        '/approval/clerk/si'           => '/approval/clerk_si.php',
+        '/approval/marks'              => '/approval/marking_scheme.php',
     ];
     
     // Handle AJAX requests first

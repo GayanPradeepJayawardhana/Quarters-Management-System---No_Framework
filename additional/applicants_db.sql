@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 18, 2026 at 09:17 AM
+-- Generation Time: Aug 21, 2026 at 06:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   PRIMARY KEY (`id`),
   KEY `idx_nic_time` (`nic`,`attempt_time`),
   KEY `idx_ip_time` (`ip_address`,`attempt_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login_attempts`
@@ -91,7 +91,14 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
 INSERT INTO `login_attempts` (`id`, `nic`, `ip_address`, `success`, `attempt_time`) VALUES
 (1, '200312345678', '::1', 1, '2026-08-18 05:31:10'),
 (2, '200312345678', '::1', 1, '2026-08-18 06:04:40'),
-(3, '200312345678', '::1', 1, '2026-08-18 06:16:18');
+(3, '200312345678', '::1', 1, '2026-08-18 06:16:18'),
+(4, '199012345678', '::1', 0, '2026-08-21 03:42:21'),
+(5, '199012345678', '::1', 0, '2026-08-21 03:42:27'),
+(6, '199012345678', '::1', 0, '2026-08-21 03:42:30'),
+(7, '20031234567', '::1', 0, '2026-08-21 03:43:07'),
+(8, '20031234567', '::1', 0, '2026-08-21 03:43:15'),
+(9, '200312345678', '::1', 0, '2026-08-21 03:43:31'),
+(10, '200312345678', '::1', 1, '2026-08-21 03:43:47');
 
 -- --------------------------------------------------------
 
@@ -206,44 +213,6 @@ ALTER TABLE `respond_to_offer`
 --
 ALTER TABLE `waiting_list`
   ADD CONSTRAINT `waiting_list_ibfk_1` FOREIGN KEY (`nic`) REFERENCES `users` (`nic`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-
---
--- Metadata
---
-USE `phpmyadmin`;
-
---
--- Metadata for table applicants
---
-
---
--- Metadata for table applications
---
-
---
--- Metadata for table login_attempts
---
-
---
--- Metadata for table notifications
---
-
---
--- Metadata for table respond_to_offer
---
-
---
--- Metadata for table users
---
-
---
--- Metadata for table waiting_list
---
-
---
--- Metadata for database applicants_db
---
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
